@@ -53,10 +53,11 @@ char *last_reduced; /* Holds the last reduced rule in the specification */
 /*********************************/
 
 
-
+char *step();
 char *steprule();
 char* read_from_ibison();
 char* execute_command(char* command);
+
 
 void quit() {
 
@@ -78,6 +79,37 @@ void next() {
         fflush(logfile);
     }
 }
+
+char *step() {
+
+    
+    char * oldtoken = malloc(256);
+    
+    if(c_token)
+        strcpy(oldtoken, c_token);
+    else
+        oldtoken[0] = '\0';
+
+    next();
+    read_from_ibison();
+
+    /*Three possible cases are reduce, encountering a new token, or a shift*/
+    if(red) {
+        /*Reduce*/
+        red = 0;
+        sprintf(oldtoken, "A new rule was parsed: %s\n",last_reduced);
+        system("truncate -s 0 intermediate");
+    } else if (strcmp(oldtoken, c_token) != 0) {
+        /* Encountered a new token*/
+        sprintf(oldtoken, "A new token was encountered: %s\n", c_token);
+    } else {
+        /* Shift */
+        sprintf(oldtoken, "The current token was added to the parsed string\n");
+    }
+    /* Reusing the oldtoken variable here */
+    return oldtoken;
+}
+
 
 char *crule() {
 
@@ -292,7 +324,10 @@ char *read_from_ibison()
 int main(int argc, char *argv[])
 {
     int fd_[2];
-     
+    c_token = NULL;
+    tkn_stk = NULL;
+    last_reduced = NULL;
+
     pipe(fd_);
     in_crule = 0;
     if (argc < 3) {
@@ -378,6 +413,10 @@ char* execute_command(char* command) {
     } else if (strcmp(command, "ctkn\n") == 0) {
         
         final = ctkn();
+
+    } else if (strcmp(command, "step\n") == 0) {
+        
+        final = step();
 
     } else if (strcmp(command, "rulepos\n") == 0) { 
 

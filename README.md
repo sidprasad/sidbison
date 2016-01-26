@@ -15,12 +15,13 @@ debugging mechanism.
 
 1. `crule`: Returns the current rule being parsed n the bison specification.
 2. `steprule` : Steps to the next rule in the iBison specification
-3.  `str`: Helps identify the current position in the entire parsing process.
-4.  `br` : Allows the user to break when a particular token is encountered.
+3. `str`: Helps identify the current position in the entire parsing process.
+4. `br` : Allows the user to break when a particular token is encountered.
+5. `step`: Steps to the next step taken by the parser
+
 
 ## Instructions to be implemented
 
-1.`step`: Steps to the next step taken by the parser
 
 2.`rulepos`: Identifies the position of the `.` in the rule being parsed. 
 
