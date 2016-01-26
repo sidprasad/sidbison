@@ -1,5 +1,5 @@
 /* Senior Thesis
- * 
+ * iBison: Siddhartha Prasad, January 2016. 
  * 
  *  Compile With: gcc -g sidbison.c -lnsl -o sidbison
  *
@@ -7,44 +7,53 @@
  *
  *
  *  TODO:
- *      - Redo break to only leverage next
- *      - ibison option things should be recorded too or removed
+ *      
+ *      - Redo break to only leverage next ...(need to test this somehow)...
+ *
+ *      - ibison option things should be recorded too or removed (maybe only as a backdoor)
  * 
 */
 #include <signal.h>
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h> 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <fcntl.h>
-#include <sys/time.h>
 
 
 
+/** Interprocess communication */
 
-int num_next;
-char *test_file;
-short isbison;
-char *bspec;
-char *lexobj;
-int parser_state;
-char *c_token; //current token
-char *tkn_stk;
-unsigned short red;
-char *last_reduced;
-FILE *child_in; //input into child
-FILE* intermediate;
-FILE* logfile;
-char *bison = "ibison";
-char *flags = "-i";
-int int_pid;
-int inter_fd;
-int in_crule;
+FILE *child_in;     /* Communication with ibison */
+FILE* logfile;      /* Communication with logfile */
+FILE* intermediate; /* Necessary for interprocess communication */
+int inter_fd;       /* intermediate file descriptor */
+int int_pid;        /* iBison process id */
+
+/*******************************/
+
+/** Internal bookkeeping **/
+char *test_file;        /* Path to input file being debugged */
+short isbison;          /* 1 if sending input directly to ibison */
+char *bspec;            /* Path to bison spec*/
+char *lexobj;           /* Path to lexer object */
+
+char *flags = "-i";     /* Flags sent to iBison*/
+char *bison = "ibison"; /* Path to iBison */
+int in_crule;           /* 1 if the crule command is being executed */
+int num_next;           /* Holds the number of steps taken in iBison */
+/*************************/
+
+/***** Current iBison information */
+int parser_state;   /* Current parser state number */
+char *c_token;      /*current token encountered*/
+char *tkn_stk;      /* Token stack */
+unsigned short red; /* Holds true if a reduce action has just taken place */
+char *last_reduced; /* Holds the last reduced rule in the specification */
+/*********************************/
+
+
+
 char *steprule();
 char* read_from_ibison();
 char* execute_command(char* command);
@@ -61,8 +70,6 @@ void quit() {
 
 void next() {
 
-    //Writing to a logfile here might be weird bcuz a crule will add
-    //roo many nexts
     fwrite("next\n", strlen("next\n"), 1, child_in);
     fflush(child_in);
     if(!in_crule) {
@@ -75,11 +82,6 @@ void next() {
 char *crule() {
 
     int pid;
-    /* Do not lose the current ibison version
- *  Also do not want to lose current state. Probably
- *  put all the state things in a struct and save the struct
- *
- *  */
     FILE *tmp = child_in;
     int fd_[2]; 
     pipe(fd_);
@@ -155,16 +157,25 @@ char *ctkn() {
 
 }
 
-char *rulepos() {
+char *str() {
     fwrite("stack\n", strlen("stack\n"), 1, child_in);
     fflush(child_in);
     read_from_ibison();
     char *to_return = malloc(512);
-    sprintf(to_return, "rulepos: %s\n",tkn_stk); 
+    sprintf(to_return, "str: %s\n",tkn_stk); 
     return to_return;
 }
 
-char *str(){}
+char *rulepos(){
+
+ /* Not implemented yet
+ *
+ * Find current state
+ * Find crule
+ * Look for instances of crule in the current state
+ *
+ * */
+}
 
 char *br() {
 
