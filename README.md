@@ -35,7 +35,7 @@ on most machines.
 3. You now want to run the following in a bash subprocess (so you can temporarily set environment variables).
 
     bash
-    export BISON_PKGDATADIR=/h/sprasa02/Desktop/iBison/data #This is my iBison directory
+    export BISON_PKGDATADIR=.../iBison/data #This is my iBison directory
 
 
 4. Now given a Flex file `lexer.l` and a Bison file `parser.y`
