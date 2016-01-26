@@ -1,5 +1,16 @@
+#Stepwise Interactive Debugger Bison
+##Siddhartha Prasad
 
-#Setting up iBison on Homework
+SIDBison offers the user the ability to debug a bison spec in terms of the
+underlying grammar. It is built on top of S Popuri's `iBison` system.
+
+## Use and setup
+
+1. Install ibison
+2. `sh compile`
+3. `./sidbison <bison spec> <lexer object>'
+
+##Setting up iBison on Tufts University Servers
 
 Given the permissions afforded to regular users on Tufts servers, it is
 hard to script an `ibison` setup. Installing `ibison` can be pretty painful
