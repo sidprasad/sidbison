@@ -1,8 +1,0 @@
-
-Welcome to Bison 2.3 interactive mode. Type "help" for assistance.
-Please report bugs to spopur2@uic.edu.
-[?1034h
-(interactive) 
-ibison: cannot open file `/usr/local/share/bison/m4sugar/m4sugar.m4': No such file or directory
-
-ibison: cannot open file `/usr/local/share/bison/m4sugar/m4sugar.m4': No such file or directory

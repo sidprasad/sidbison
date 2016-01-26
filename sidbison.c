@@ -34,40 +34,55 @@ char *bison = "ibison";
 char *flags = "-i";
 int int_pid;
 int inter_fd;
-
+int in_crule;
 char *steprule();
 char* read_from_ibison();
 char* execute_command(char* command);
 
+void quit() {
+
+    printf("Quitting\n");
+    kill(int_pid, 9);
+    system("rm intermediate");
+    system("rm logfile");
+    exit(0);
+
+}
+
 void next() {
 
+    //Writing to a logfile here might be weird bcuz a crule will add
+    //roo many nexts
     fwrite("next\n", strlen("next\n"), 1, child_in);
     fflush(child_in);
-    fwrite("next\n", strlen("next\n"), 1, logfile);
-    fflush(logfile);
+    if(!in_crule) {
+        fwrite("next\n", strlen("next\n"), 1, logfile);
+        fflush(logfile);
+    }
 }
 
 char *crule() {
 
     int pid;
-    /* Do not lose the current ibison version*/
+    /* Do not lose the current ibison version
+ *  Also do not want to lose current state. Probably
+ *  put all the state things in a struct and save the struct*/
     FILE *tmp = child_in;
     int fd_[2]; 
+    pipe(fd_);
     if (pid = fork()) {
-        char* lexer = malloc(512* sizeof(*lexer));
-        sprintf(lexer,"lexer %s\n", lexobj);
         
         child_in = fdopen(fd_[1], "w");
+        close(fd_[0]);
         
         size_t n = 400;
-        //All sidBison commands are shorter than 128 characters
         char *command = malloc(512);
+        system("cat logfile");
         
-        //Send iBison lex lexer.so command
-        fwrite(lexer, strlen(lexer), 1, child_in);
-        
+        rewind(logfile);
+        in_crule = 1;
         while(getline(&command, &n, logfile) != -1) {
-            command = strcat(command, "\n");
+            printf(command);
             fwrite(command, strlen(command), 1, child_in);
             fflush(child_in);
         }
@@ -86,13 +101,15 @@ char *crule() {
         close(fd_[0]);
         execl(bison, bison, flags,  bspec, NULL);       
     }
-
+    in_crule = 0;
     child_in = tmp;
     kill(pid,9);
     return last_reduced;
 }
 
 char *steprule() {
+
+    system("truncate -s 0 intermediate");
     red = 0;
 
     while(!red) {
@@ -211,8 +228,6 @@ char *read_from_ibison()
             }
         }
 
-        /* This will make the process more efficient*/
-        //system("truncate -s 0 intermediate");
         return out; 
 
       } else {
@@ -229,9 +244,9 @@ char *read_from_ibison()
 int main(int argc, char *argv[])
 {
     int fd_[2];
-    
+     
     pipe(fd_);
-    
+    in_crule = 0;
     if (argc < 3) {
         fprintf(stderr,"ERROR: Bison specification and lexer shared object must be provided\n");
         exit(1);
@@ -241,7 +256,7 @@ int main(int argc, char *argv[])
     bspec = malloc(512);
     strcpy(lexobj, argv[2]);
     strcpy(bspec, argv[1]);
-
+    printf("bspec is %s\n", bspec);
 
     intermediate = fopen("intermediate", "a+");
     setvbuf(intermediate, NULL, _IONBF, BUFSIZ);
@@ -279,12 +294,10 @@ int main(int argc, char *argv[])
 
 
             if(strcmp(command, "quit\n") == 0) {
-                printf("Quitting\n");
-                kill(int_pid, 9);
-                system("rm intermediate");
-                exit(0);
-                
-            } 
+               quit(); 
+            }
+
+ 
             response = execute_command(command);
             if(response) {
                 fprintf(stdout, response);
@@ -307,7 +320,7 @@ int main(int argc, char *argv[])
         close(inter_fd);
         close(fd_[1]);
         close(fd_[0]);
-        execl(bison, bison, flags,  argv[1], NULL);
+        execl(bison, bison, flags,  bspec, NULL);
     }
 }
 
@@ -365,7 +378,7 @@ char* execute_command(char* command) {
             free(final);
         final = malloc(512);
         read_from_ibison(); 
-        strcpy(final,"Written to iBison. Want iBison output here\n");
+        strcpy(final,"\n");
         isbison = 0;
     }  else {
         final = malloc(512);
