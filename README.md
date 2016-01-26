@@ -4,11 +4,18 @@
 SIDBison offers the user the ability to debug a bison spec in terms of the
 underlying grammar. It is built on top of S Popuri's `iBison` system.
 
-## Use and setup
+## Setup
 
 1. Install ibison
 2. `sh compile`
 3. `./sidbison bisonspec.y lexerobject.so`
+
+## Current instruction set
+
+- crule
+- steprule
+- rulepos
+- br
 
 ##Setting up iBison on Tufts University Servers
 
