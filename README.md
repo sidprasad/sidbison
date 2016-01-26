@@ -24,7 +24,7 @@ on most machines.
     cd iBison/
     ./configure
     make
-    sudo make install #You likely do not have sudo priveliges on the Tufts
+    sudo make install  You likely do not have sudo priveliges on the Tufts
                        servers. So skip this step, and keep track of your
                        iBison directory folder. A binary is generated in
                        the src/ directory
