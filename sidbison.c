@@ -1,4 +1,4 @@
-/* Comp 112 Assignment 5
+/* Senior Thesis
  * 
  * 
  *  Compile With: gcc -g sidbison.c -lnsl -o sidbison
