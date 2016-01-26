@@ -4,6 +4,15 @@
  *  Compile With: gcc -g sidbison.c -lnsl -o sidbison
  *
  *  Run with bison specification and lexer shared object as input
+ *
+ *
+ *  TODO:
+ *      - Redo break to only leverage next
+ *      - ibison option things should be recorded too or removed
+ *      - "test"
+ *      - For crule, preserve state. Maybe put important state variables in
+ *        state and redo.
+ *      - Maybe add current token option
  * 
 */
 #include <signal.h>
@@ -19,6 +28,8 @@
 #include <fcntl.h>
 #include <sys/time.h>
 
+int num_next;
+char *test_file;
 short isbison;
 char *bspec;
 char *lexobj;
@@ -56,6 +67,7 @@ void next() {
     fwrite("next\n", strlen("next\n"), 1, child_in);
     fflush(child_in);
     if(!in_crule) {
+        num_next++;
         fwrite("next\n", strlen("next\n"), 1, logfile);
         fflush(logfile);
     }
@@ -66,7 +78,9 @@ char *crule() {
     int pid;
     /* Do not lose the current ibison version
  *  Also do not want to lose current state. Probably
- *  put all the state things in a struct and save the struct*/
+ *  put all the state things in a struct and save the struct
+ *
+ *  */
     FILE *tmp = child_in;
     int fd_[2]; 
     pipe(fd_);
@@ -77,15 +91,29 @@ char *crule() {
         
         size_t n = 400;
         char *command = malloc(512);
-        system("cat logfile");
         
         rewind(logfile);
         in_crule = 1;
-        while(getline(&command, &n, logfile) != -1) {
-            printf(command);
+
+        int i;
+        for(i = 0; i <2; i++) {
+            getline(&command, &n, logfile);
             fwrite(command, strlen(command), 1, child_in);
             fflush(child_in);
+
         }
+        /*
+        while(getline(&command, &n, logfile) != -1) {
+            fwrite(command, strlen(command), 1, child_in);
+            fflush(child_in);
+        }*/
+        
+        for(i = 0; i < num_next; i++) {
+
+            next();
+            read_from_ibison(); //THIS IS ONLY FOR DEBUGGING
+        }
+        
         steprule();
 
     } else {
@@ -104,7 +132,9 @@ char *crule() {
     in_crule = 0;
     child_in = tmp;
     kill(pid,9);
-    return last_reduced;
+    char *to_return = malloc(512);
+    sprintf(to_return, "crule: %s", last_reduced);
+    return to_return;
 }
 
 char *steprule() {
@@ -119,7 +149,6 @@ char *steprule() {
 
     red = 0;
     char *msg = malloc(32);
-    
     strcpy(msg, "Stepped to next rule\n");
     return msg;
 }
@@ -183,7 +212,6 @@ char *read_from_ibison()
 
         //While lines can be read
         while(getline(&out, &n, inter_in) != -1) {
-            
             if(isbison) {
                 printf("(ibison) %s\n",out);
             }
@@ -358,13 +386,18 @@ char* execute_command(char* command) {
     
         final = br();
 
-    } else if (sscanf(command, "test %s.y\n", temp) == 1) {
+    } else if (sscanf(command, "test %s", temp) == 1) {
+
+        test_file = malloc(512);
+        strcpy(test_file, command);
+        fwrite(test_file, strlen(test_file), 1, child_in);
+        fflush(child_in);
+
+        fwrite(test_file, strlen(test_file), 1, child_in);
+        fflush(child_in); 
 
         final = malloc(512);
-        sprintf(final, "%s\n", command);
-        fwrite(final, strlen(final), 1, child_in);
-        fflush(child_in); 
-        sprintf(final, "Testing %s.y\n", temp);
+        sprintf(final, "Testing %s\n", temp);
     
     } else if (strcmp(command, "ibison\n") == 0) {
 
@@ -374,6 +407,9 @@ char* execute_command(char* command) {
         getline(&final, &n, stdin);
         fwrite(final, strlen(final), 1, child_in);
         fflush(child_in);
+        fwrite(final, strlen(final), 1, logfile);
+        fflush(logfile);
+
         if(final)
             free(final);
         final = malloc(512);
