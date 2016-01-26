@@ -21,7 +21,8 @@ debugging mechanism.
 ## Instructions to be implemented
 
 1.`step`: Steps to the next step taken by the parser
-2. `rulepos`: Identifies the position of the `.` in the rule being parsed. 
+
+2.`rulepos`: Identifies the position of the `.` in the rule being parsed. 
 
 
 
