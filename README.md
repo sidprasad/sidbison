@@ -28,6 +28,8 @@ on most machines.
                        servers. So skip this step, and keep track of your
                        iBison directory folder. A binary is generated in
                        the src/ directory
+
+
 ----------------------------------------------------------
 
 3. You now want to run the following in a bash subprocess (so you can temporarily set environment variables).
@@ -43,7 +45,7 @@ on most machines.
     gcc -c -fPIC lex.yy.c
     gcc -shared -o lex.so lex.yy.o
 
-    # Make sure LD_LIBRARY_PATH includes the directory in which lexer.so is
+    Make sure LD_LIBRARY_PATH includes the directory in which lexer.so is
       available
 
     ./ibison -i parser.y #bison should refer to your ibison binary
