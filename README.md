@@ -8,7 +8,7 @@ underlying grammar. It is built on top of S Popuri's `iBison` system.
 
 1. Install ibison
 2. `sh compile`
-3. `./sidbison <bison spec> <lexer object>'
+3. `./sidbison bisonspec.y lexerobject.so`
 
 ##Setting up iBison on Tufts University Servers
 
