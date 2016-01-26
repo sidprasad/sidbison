@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <sys/time.h>
 
+short isbison;
 char *bspec;
 char *lexobj;
 int parser_state;
@@ -100,7 +101,10 @@ char *steprule() {
     }
 
     red = 0;
-    return "Stepped to next rule\n";
+    char *msg = malloc(32);
+    
+    strcpy(msg, "Stepped to next rule\n");
+    return msg;
 }
 
 
@@ -156,12 +160,17 @@ char *read_from_ibison()
         size_t n2 = 400;
         int i;
 
-        system("cat intermediate > /dev/null");
+        //system("cat intermediate");
         inter_in = fdopen(fd[0], "r");
         close(fd[1]);
 
         //While lines can be read
         while(getline(&out, &n, inter_in) != -1) {
+            
+            if(isbison) {
+                printf("(ibison) %s\n",out);
+            }
+
             if(sscanf(out, "Reading a token...next token is: %s\n",temp) == 1) {
                if(c_token)
                     free(c_token);
@@ -181,8 +190,6 @@ char *read_from_ibison()
 
             } else if (strcmp(out, "Stacks:(states, tokens)\n") == 0) {
            
-                 
-              printf("Out was %s\n", out);
               free(out);
               out = NULL;
               getline(&out, &n, inter_in);
@@ -205,7 +212,7 @@ char *read_from_ibison()
         }
 
         /* This will make the process more efficient*/
-        system("truncate -s 0 intermediate");
+        //system("truncate -s 0 intermediate");
         return out; 
 
       } else {
@@ -230,8 +237,6 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    printf("Argv[1] is %s\n", argv[1]);
-    
     lexobj = malloc(512);
     bspec = malloc(512);
     strcpy(lexobj, argv[2]);
@@ -247,10 +252,8 @@ int main(int argc, char *argv[])
               /****************************************/
         char* lexer = malloc(512* sizeof(*lexer));
 
-        sprintf(lexer,"lexer %s\n", argv[2]);
-        printf("%s\n",lexer);
+        sprintf(lexer,"lexer %s\n", lexobj);
         child_in = fdopen(fd_[1], "w");
-
         //All sidBison commands are shorter than 128 characters
         char *command = NULL;
         char *response = NULL;
@@ -260,19 +263,28 @@ int main(int argc, char *argv[])
         logfile = fopen("logfile", "w+");
 
 
-
         //Send iBison lex lexer.so command
         fwrite(lexer, strlen(lexer), 1, child_in);
         fwrite(lexer, strlen(lexer), 1, logfile);
-
+        fflush(child_in);
+        fflush(logfile);
 
         printf("Stepwise Interactive Debugger Bison\n"); 
         while(1) {
                 
             printf(">");
-            fflush(stdin);
+            fflush(stdout);
             getline(&command, &n, stdin);
             
+
+
+            if(strcmp(command, "quit\n") == 0) {
+                printf("Quitting\n");
+                kill(int_pid, 9);
+                system("rm intermediate");
+                exit(0);
+                
+            } 
             response = execute_command(command);
             if(response) {
                 fprintf(stdout, response);
@@ -301,14 +313,15 @@ int main(int argc, char *argv[])
 
 char* execute_command(char* command) {
 
-    system("truncate -s 0 intermediate");
-    printf("Command was: %s\n", command);
     char* final = NULL;
+    //system("truncate -s 0 intermediate");
     char temp[256];
     size_t n = 0;   
     if (strcmp(command, "crule\n") == 0) {
         
+        system("truncate -s 0 intermediate");
         final = crule();
+        system("truncate -s 0 intermediate");
     
     } else if (strcmp(command, "stepparent\n") == 0) {
         
@@ -324,7 +337,9 @@ char* execute_command(char* command) {
 
     } else if (strcmp(command, "steprule\n") == 0) {
     
+        system("truncate -s 0 intermediate");
         final = steprule();
+        system("truncate -s 0 intermediate"); /*Must truncate after a reduce */
 
     } else if (strcmp(command, "br\n") == 0) {
     
@@ -338,19 +353,20 @@ char* execute_command(char* command) {
         fflush(child_in); 
         sprintf(final, "Testing %s.y\n", temp);
     
-    } else if (sscanf(command, "ibison") == 0) {
+    } else if (strcmp(command, "ibison\n") == 0) {
 
         printf("(ibison)");
         fflush(stdout);
-
+        isbison = 1;
         getline(&final, &n, stdin);
         fwrite(final, strlen(final), 1, child_in);
         fflush(child_in);
         if(final)
             free(final);
-        final = malloc(512); 
+        final = malloc(512);
+        read_from_ibison(); 
         strcpy(final,"Written to iBison. Want iBison output here\n");
-
+        isbison = 0;
     }  else {
         final = malloc(512);
         sprintf(final,"Unrecognized command '%s'\n", command);
