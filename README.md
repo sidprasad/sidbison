@@ -23,7 +23,7 @@ debugging mechanism.
 ## Instructions to be implemented
 
 
-2.`rulepos`: Identifies the position of the `.` in the rule being parsed. 
+1.`rulepos`: Identifies the position of the `.` in the rule being parsed. 
 
 
 

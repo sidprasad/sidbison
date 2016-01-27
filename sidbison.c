@@ -50,6 +50,7 @@ char *c_token;      /*current token encountered*/
 char *tkn_stk;      /* Token stack */
 unsigned short red; /* Holds true if a reduce action has just taken place */
 char *last_reduced; /* Holds the last reduced rule in the specification */
+char *rule_pos;
 /*********************************/
 
 
@@ -207,6 +208,19 @@ char *rulepos(){
  * Look for instances of crule in the current state
  *
  * */
+    
+    char *state = malloc(32);
+    if(parser_state < 0) {
+        strcpy(state, "No rule being parsed yet\n");
+        return state;    
+    }
+    sprintf(state, "state %d\n", parser_state);
+    
+    fwrite(state, strlen(state), 1, child_in);
+    fflush(child_in);
+    read_from_ibison();
+    
+    return rule_pos;
 }
 
 char *br() {
@@ -248,20 +262,30 @@ char *read_from_ibison()
     if(temp_pid = fork()) {
         char *out = NULL;
         char temp [512];
-        size_t n = 400;
-        size_t n2 = 400;
+        size_t n = 0;
+        char *state_response = malloc(32);
+        sprintf(state_response, "state %d:\n", parser_state);
         int i;
 
         inter_in = fdopen(fd[0], "r");
         close(fd[1]);
 
         while(getline(&out, &n, inter_in) != -1) {
-            
             if(isbison) {
                 printf("(ibison) %s\n",out);
             }
+            if(strcmp(out, state_response) == 0) { /*TODO*/
+               
+               printf("Rules in the state are:\n");
+               free(out);
+               out = NULL;
+               while( getline(&out, &n, inter_in) != -1) { //THIS DOESNT WORK
+                    printf(out); //Not ireading anything here
+               }
 
-            if(!in_crule && 
+                rule_pos = crule();
+
+            } else if(!in_crule && 
             sscanf(out, "Reading a token...next token is: %s\n",temp) == 1) {
             
                if(c_token)
@@ -298,16 +322,16 @@ char *read_from_ibison()
               tkn_stk = malloc(512);
               if(strlen(out) > 1) {
                 strcpy(tkn_stk, out);
-              
-              } else {
+             
+            } else {
                 strcpy(tkn_stk, "ERR: Nothing read yet\n");
-              }
+            }
 
               free(out);
               out = NULL;
             }
         }
-
+        free(state_response);
         return out; 
 
       } else {
@@ -324,9 +348,11 @@ char *read_from_ibison()
 int main(int argc, char *argv[])
 {
     int fd_[2];
+    parser_state = -1;
     c_token = NULL;
     tkn_stk = NULL;
     last_reduced = NULL;
+    rule_pos = NULL;
 
     pipe(fd_);
     in_crule = 0;
@@ -420,6 +446,7 @@ char* execute_command(char* command) {
 
     } else if (strcmp(command, "rulepos\n") == 0) { 
 
+        system("truncate -s 0 intermediate");
         final = rulepos();
     
     } else if (strcmp(command, "str\n") == 0) {
