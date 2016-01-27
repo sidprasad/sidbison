@@ -309,14 +309,23 @@ char *read_from_ibison()
 
             } else if (!in_crule &&
               strcmp(out, "Stacks:(states, tokens)\n") == 0) {
-           
               free(out);
               out = NULL;
               getline(&out, &n, inter_in);
+
+              char *last_space = NULL;
+              int len = strlen(out);
+              for(i = 0; i < len-1; i++) {
+                if((out[i] == ' ') && (out[i+1] != '\n')){
+                    last_space = out + i; /* Nasty pointer arithmetic */
+                 }
+              }
+
+              sscanf(last_space, " %d\n", &parser_state);
               free(out);
               out = NULL;
               getline(&out, &n, inter_in);
-               
+
               if(tkn_stk)
                 free(tkn_stk);
               tkn_stk = malloc(512);

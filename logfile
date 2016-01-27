@@ -1,7 +1,0 @@
-lexer calcexample/lex.so
-test calcinput
-next
-next
-next
-next
-next
