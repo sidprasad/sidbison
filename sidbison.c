@@ -114,6 +114,7 @@ char *step() {
 
 char *crule() {
 
+    system("truncate -s 0 intermediate");
     int pid;
     FILE *tmp = child_in;
     int fd_[2]; 
@@ -219,7 +220,7 @@ char *rulepos(){
     fwrite(state, strlen(state), 1, child_in);
     fflush(child_in);
     read_from_ibison();
-    
+    system("truncate -s 0 intermediate");
     return rule_pos;
 }
 
@@ -275,15 +276,24 @@ char *read_from_ibison()
                 printf("(ibison) %s\n",out);
             }
             if(strcmp(out, state_response) == 0) { /*TODO*/
-               
-               printf("Rules in the state are:\n");
                free(out);
-               out = NULL;
-               while( getline(&out, &n, inter_in) != -1) { //THIS DOESNT WORK
-                    printf(out); //Not ireading anything here
-               }
 
-                rule_pos = crule();
+               if(!rule_pos) {
+                    free(rule_pos);
+                } 
+               rule_pos = malloc(1024);
+
+               out = NULL;
+               while(getline(&out, &n, inter_in) == 1){
+                    free(out);
+                    out = NULL;
+               }
+                strcat(rule_pos,"Possible rule positions are:\n");
+               do {
+                     strcat(rule_pos, out); //Not ireading anything here
+                     free(out);
+                     out = NULL;
+               } while(getline(&out, &n, inter_in) >= 1);
 
             } else if(!in_crule && 
             sscanf(out, "Reading a token...next token is: %s\n",temp) == 1) {

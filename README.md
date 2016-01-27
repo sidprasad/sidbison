@@ -13,7 +13,7 @@ debugging mechanism.
 
 ## Current instruction set
 
-1. `crule`: Returns the current rule being parsed n the bison specification.
+1. `crule`: Returns the current rule being parsed in the bison specification.
 2. `steprule` : Steps to the next rule in the iBison specification
 3. `str`: Helps identify the current position in the entire parsing process.
 4. `br` : Allows the user to break when a particular token is encountered.
