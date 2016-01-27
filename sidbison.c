@@ -9,7 +9,7 @@
  *  TODO:
  *      
  *      - Redo break to only leverage next ...(need to test this somehow)...
- *
+ *      - in_crule abstraction has now been broken by crule needing the state stack. Design a way to preserve all the stack information. Maybe just call stack after.
  *      - ibison option things should be recorded too or removed (maybe only as a backdoor)
  * 
 */
@@ -48,12 +48,13 @@ int num_next;           /* Holds the number of steps taken in iBison */
 int parser_state;   /* Current parser state number */
 char *c_token;      /*current token encountered*/
 char *tkn_stk;      /* Token stack */
+char *state_stk;    /*State stk*/
 unsigned short red; /* Holds true if a reduce action has just taken place */
 char *last_reduced; /* Holds the last reduced rule in the specification */
 char *rule_pos;
 /*********************************/
 
-
+char *str();
 char *step();
 char *steprule();
 char* read_from_ibison();
@@ -67,6 +68,13 @@ void quit() {
     system("rm intermediate");
     system("rm logfile");
     exit(0);
+
+}
+
+void finished_parsing() {
+
+    printf("Finished parsing, string is accepted\n");
+    quit();
 
 }
 
@@ -142,8 +150,19 @@ char *crule() {
             next();
             read_from_ibison();
         }
-        
-        steprule();
+      
+        int old_len = strlen(state_stk);
+        int old_ps = parser_state;        
+        short len_changed;
+        short len_equal_and_state_changed;
+        do {
+            steprule();
+            len_changed = strlen(state_stk) < old_len;
+            len_equal_and_state_changed = (strlen(state_stk) == old_len)
+                                        && (old_ps != parser_state);
+        } while(!len_changed && !len_equal_and_state_changed);
+        /* Better readability w/o DeMorgan simplification */
+
 
     } else {
  
@@ -163,6 +182,7 @@ char *crule() {
     kill(pid,9);
     char *to_return = malloc(512);
     sprintf(to_return, "crule: %s", last_reduced);
+    str(); /* Restore state*/
     return to_return;
 }
 
@@ -221,7 +241,10 @@ char *rulepos(){
     fflush(child_in);
     read_from_ibison();
     system("truncate -s 0 intermediate");
-    return rule_pos;
+    char* curr_rule = crule();
+    char *to_return = malloc(1024);
+    sprintf(to_return, "%sWhere %s", rule_pos, curr_rule);
+    return to_return;
 }
 
 char *br() {
@@ -300,7 +323,11 @@ char *read_from_ibison()
             
                if(c_token)
                     free(c_token);
+                if(strstr(temp, "$end")) {
 
+                    finished_parsing();
+
+                }
                c_token = malloc(512);
                strcpy(c_token, temp);
 
@@ -317,11 +344,15 @@ char *read_from_ibison()
               sscanf(out, "Token is shifted. Entering state %d\n",
               &parser_state) == 1) {
 
-            } else if (!in_crule &&
-              strcmp(out, "Stacks:(states, tokens)\n") == 0) {
+            } else if (strcmp(out, "Stacks:(states, tokens)\n") == 0) {
               free(out);
               out = NULL;
               getline(&out, &n, inter_in);
+              
+              if(state_stk)
+                    free(state_stk);
+              state_stk = malloc(512);
+              strcpy(state_stk, out);
 
               char *last_space = NULL;
               int len = strlen(out);
@@ -372,6 +403,7 @@ int main(int argc, char *argv[])
     tkn_stk = NULL;
     last_reduced = NULL;
     rule_pos = NULL;
+    state_stk = NULL;
 
     pipe(fd_);
     in_crule = 0;
@@ -410,7 +442,7 @@ int main(int argc, char *argv[])
         printf("Please report bugs to Siddhartha.Prasad@tufts.edu\n");
         while(1) {
                 
-            printf(">");
+            printf("(sidbison)");
             fflush(stdout);
             getline(&command, &n, stdin);
 
