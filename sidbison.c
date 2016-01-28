@@ -7,9 +7,6 @@
  *
  *
  *  TODO:
- *      
- *      - Redo break to only leverage next ...(need to test this somehow)...
- *      - in_crule abstraction has now been broken by crule needing the state stack. Design a way to preserve all the stack information. Maybe just call stack after.
  *      - ibison option things should be recorded too or removed (maybe only as a backdoor)
  * 
 */
