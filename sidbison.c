@@ -22,7 +22,6 @@
 /** Interprocess communication */
 
 FILE *child_in;     /* Communication with ibison */
-FILE* logfile;      /* Communication with logfile */
 FILE* intermediate; /* Necessary for interprocess communication */
 int inter_fd;       /* intermediate file descriptor */
 int int_pid;        /* iBison process id */
@@ -64,7 +63,6 @@ void quit() {
     printf("Quitting\n");
     kill(int_pid, 9);
     system("rm intermediate");
-    system("rm logfile");
     exit(0);
 
 }
@@ -75,8 +73,8 @@ void finished_parsing() {
         if(last_reduced){
             free(last_reduced);
         }
-        last_reduced = malloc(64);
-        sprintf(last_reduced, "Hit EOF before crule could be identified. Input has probably been parsed or is not accepted\n");
+        last_reduced = malloc(128);
+        sprintf(last_reduced, "Hit EOF before crule could be identified.\n");
  
     } else {
         printf("Finished parsing, string is accepted\n");
@@ -91,8 +89,6 @@ void next() {
     fflush(child_in);
     if(!in_crule) {
         num_next++;
-        fwrite("next\n", strlen("next\n"), 1, logfile);
-        fflush(logfile);
     }
 }
 
@@ -134,25 +130,32 @@ char *crule() {
     FILE *tmp = child_in;
     int fd_[2]; 
     pipe(fd_);
+
+    char *old_current_token = NULL;
     if (pid = fork()) {
-        
+       
+
+        if(c_token) {
+            old_current_token = malloc(256);
+            strcpy(old_current_token, c_token);
+        }
+
         child_in = fdopen(fd_[1], "w");
         close(fd_[0]);
         
         size_t n = 400;
         char *command = malloc(512);
         
-        rewind(logfile);
         in_crule = 1;
 
         int i;
-        for(i = 0; i <2; i++) {
-            getline(&command, &n, logfile);
-            fwrite(command, strlen(command), 1, child_in);
-            fflush(child_in);
-
-        }
         
+        char *startupcommands = malloc(1024);
+        sprintf(startupcommands, "lexer %s\n%s", lexobj, test_file);
+        fwrite( startupcommands, strlen(startupcommands),1, child_in);
+
+        fflush(child_in);
+
         for(i = 0; i < num_next; i++) {
             next();
             read_from_ibison();
@@ -186,6 +189,11 @@ char *crule() {
         execl(bison, bison, flags,  bspec, NULL);       
     }
     in_crule = 0;
+
+    if(c_token)
+        free(c_token);
+    c_token = old_current_token;
+
     child_in = tmp;
     kill(pid,9);
     char *to_return = malloc(512);
@@ -263,13 +271,6 @@ char *br() {
     fflush(stdout);
     fgets(token, sizeof(token), stdin);
     
-    /*sprintf((char *)final, "token %s\n", token);
-    
-    //writing commands to ibison
-    fwrite(final, strlen(final), 1, child_in);
-    fflush(child_in);
-    fwrite(final, strlen(final), 1, logfile);
-    fflush(logfile);*/
 
     while(strcmp(token, c_token) != 0) {
 
@@ -345,7 +346,8 @@ char *read_from_ibison()
                free(out);
                out = NULL;
                getline(&out, &n, inter_in);
-               free(last_reduced);
+               if(last_reduced)
+                    free(last_reduced);
                last_reduced = malloc(512);
                strcpy(last_reduced, out);
             
@@ -381,6 +383,7 @@ char *read_from_ibison()
               tkn_stk = malloc(512);
               if(strlen(out) > 1) {
                 strcpy(tkn_stk, out);
+
              
             } else {
                 strcpy(tkn_stk, "ERR: Nothing read yet\n");
@@ -440,12 +443,9 @@ int main(int argc, char *argv[])
         char *response = NULL;
         size_t n = 0;
 
-        logfile = fopen("logfile", "w+");
 
         fwrite(lexer, strlen(lexer), 1, child_in);
-        fwrite(lexer, strlen(lexer), 1, logfile);
         fflush(child_in);
-        fflush(logfile);
 
         printf("Stepwise Interactive Debugger Bison 1.0\n");
         printf("Please report bugs to Siddhartha.Prasad@tufts.edu\n");
@@ -531,8 +531,6 @@ char* execute_command(char* command) {
         strcpy(test_file, command);
         fwrite(test_file, strlen(test_file), 1, child_in);
         fflush(child_in);
-        fwrite(test_file, strlen(test_file), 1, logfile);
-        fflush(logfile);
         isbison = 1;
         read_from_ibison(); 
         isbison = 0; 
@@ -549,8 +547,6 @@ char* execute_command(char* command) {
         getline(&final, &n, stdin);
         fwrite(final, strlen(final), 1, child_in);
         fflush(child_in);
-        fwrite(final, strlen(final), 1, logfile);
-        fflush(logfile);
 
         if(final)
             free(final);
