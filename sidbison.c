@@ -42,6 +42,7 @@ char *flags = "-i";     /* Flags sent to iBison*/
 char *bison = "ibison"; /* Path to iBison */
 int in_crule;           /* 1 if the crule command is being executed */
 int num_next;           /* Holds the number of steps taken in iBison */
+short eof;              /* Holds 1 if eof OR end token are encountered */
 /*************************/
 
 /***** Current iBison information */
@@ -73,8 +74,17 @@ void quit() {
 
 void finished_parsing() {
 
-    printf("Finished parsing, string is accepted\n");
-    quit();
+    if(in_crule) {
+        if(last_reduced){
+            free(last_reduced);
+        }
+        last_reduced = malloc(64);
+        sprintf(last_reduced, "Hit EOF before crule could be identified. Input has probably been parsed or is not accepted\n");
+ 
+    } else {
+        printf("Finished parsing, string is accepted\n");
+        quit();
+    }
 
 }
 
@@ -155,14 +165,15 @@ char *crule() {
         int old_ps = parser_state;        
         short len_changed;
         short len_equal_and_state_changed;
+        
         do {
             steprule();
             len_changed = strlen(state_stk) < old_len;
             len_equal_and_state_changed = (strlen(state_stk) == old_len)
                                         && (old_ps != parser_state);
-        } while(!len_changed && !len_equal_and_state_changed);
+        } while(!len_changed && !len_equal_and_state_changed && !eof);
         /* Better readability w/o DeMorgan simplification */
-
+        eof = 0; /* Reset eof if encountered */
 
     } else {
  
@@ -182,6 +193,7 @@ char *crule() {
     kill(pid,9);
     char *to_return = malloc(512);
     sprintf(to_return, "crule: %s", last_reduced);
+    system("truncate -s 0 intermediate");
     str(); /* Restore state*/
     return to_return;
 }
@@ -190,8 +202,7 @@ char *steprule() {
 
     system("truncate -s 0 intermediate");
     red = 0;
-
-    while(!red) {
+    while(!red && !eof) {
         next();
         read_from_ibison();
     }
@@ -290,7 +301,7 @@ char *read_from_ibison()
         char *state_response = malloc(32);
         sprintf(state_response, "state %d:\n", parser_state);
         int i;
-
+        char tkn_name[128];
         inter_in = fdopen(fd[0], "r");
         close(fd[1]);
 
@@ -318,13 +329,14 @@ char *read_from_ibison()
                      out = NULL;
                } while(getline(&out, &n, inter_in) >= 1);
 
-            } else if(!in_crule && 
-            sscanf(out, "Reading a token...next token is: %s\n",temp) == 1) {
+            } else if(sscanf(out,
+              "Reading a token...next token is: %s %s\n",temp, tkn_name) == 2) {
             
                if(c_token)
                     free(c_token);
-                if(strstr(temp, "$end")) {
-
+               
+                if(strstr(tkn_name, "end")) {
+                    eof = 1;    
                     finished_parsing();
 
                 }
