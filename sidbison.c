@@ -265,6 +265,7 @@ char *rulepos(){
 
 char *br() {
 
+    char *to_return = malloc(128);
     char token [256];
     char final [300];
     printf("Character: ");
@@ -272,12 +273,21 @@ char *br() {
     fgets(token, sizeof(token), stdin);
     
 
+    if(strlen(token) <= 1) {
+        sprintf(to_return, "br: %s Not a valid token\n", c_token);
+        return to_return;
+    }
+    /* Removing trailing newline character*/
+    char *pos;
+    if((pos=strchr(token, '\n')) != NULL)
+        *pos = '\0';
+    
+    printf("Token is now %s", token);
+    fflush(stdout);
     while(strcmp(token, c_token) != 0) {
-
         next();
         read_from_ibison();
     }
-    char *to_return = malloc(128);
     sprintf(to_return, "br: Broken at %s\n", c_token);
     return to_return;
 }
