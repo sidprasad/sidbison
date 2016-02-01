@@ -10,14 +10,8 @@
  *      - ibison option things should be recorded too or removed (maybe only as a backdoor)
  * 
 */
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h> 
 
-
+#include "sidbison.h"
 
 /** Interprocess communication */
 
@@ -51,11 +45,6 @@ char *last_reduced; /* Holds the last reduced rule in the specification */
 char *rule_pos;
 /*********************************/
 
-char *str();
-char *step();
-char *steprule();
-char* read_from_ibison();
-char* execute_command(char* command);
 
 
 void quit() {
@@ -282,8 +271,6 @@ char *br() {
     if((pos=strchr(token, '\n')) != NULL)
         *pos = '\0';
     
-    printf("Token is now %s", token);
-    fflush(stdout);
     while(strcmp(token, c_token) != 0) {
         next();
         read_from_ibison();

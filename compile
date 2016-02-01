@@ -1,6 +1,6 @@
 
 
 export LD_LIBRARY_PATH="."
-gcc -g sidbison.c -o sidbison
+gcc -g sidbison.h sidbison.c -o sidbison
 
 
