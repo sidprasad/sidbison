@@ -1,5 +1,4 @@
 
-
 export LD_LIBRARY_PATH="."
 gcc -g sidbison.h sidbison.c -o sidbison
 

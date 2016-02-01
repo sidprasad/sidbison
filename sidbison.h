@@ -8,23 +8,23 @@
 #include <sys/types.h>
 
 
-char *str();
+char *str();                            /* Implements the str command */
 
-char *step();
+char *step();                           /* Implements the step command */
 
-char *steprule();
+char *steprule();                       /* Implements the steprule command */
 
-char *read_from_ibison();
+char *read_from_ibison();               /*Examines iBison output and updates state accordingly*/
 
-char *execute_command(char *command);
+char *execute_command(char *command);   /*Executes a given command */
 
-void quit();
+void quit();                            /*Executes the quit command*/
 
-void finished_parsing();
+void finished_parsing();                /*Called when the entire input has been parsed*/
 
-void next();
+void next();                            /*Send a next comand to ibison */
 
-char *crule();
+char *crule();                          /* Implements the crule command */
 
 
 #endif
