@@ -13,6 +13,11 @@
 
 #include "sidbison.h"
 
+/**********/
+const int version = 1;
+/**********/
+
+
 /** Interprocess communication */
 
 FILE *child_in;     /* Communication with ibison */
@@ -63,7 +68,7 @@ void finished_parsing() {
             free(last_reduced);
         }
         last_reduced = malloc(128);
-        sprintf(last_reduced, "Hit EOF before crule could be identified.\n");
+        sprintf(last_reduced, "Hit EOF before crule could be identified. Taking a step and calling crule again may help\n");
  
     } else {
         printf("Finished parsing, string is accepted\n");
@@ -417,8 +422,20 @@ int main(int argc, char *argv[])
     pipe(fd_);
     in_crule = 0;
     if (argc < 3) {
-        fprintf(stderr,"ERROR: Bison specification and lexer shared object must be provided\n");
-        exit(1);
+
+        if(argc == 2) {
+            if(strcmp("-h", argv[1]) == 0) {
+
+                printf("sidBison %d\n\ncrule: Returns the current rule being parsed.\nstepruule: Steps to the next rule parsed in the Bison specification\nstrIdentifies the current position in the entire parsing process\nbrBreaks at a particular input token\nstep: Steps to the next action taken by the parser\nctkn: Displays the current token\nrulepos: Current position in rule\ntest <filename> Accepts a file to be debugged\nquit: Ends program\n", version);
+
+            } else if (strcmp("-v", argv[1]) == 0) {
+                printf("Version %d\n", version);
+            }
+        }
+        
+
+       fprintf(stderr,"\nUsage: sidbison <Bison specification> <lexer object>\n");
+        exit(0);
     }
 
     lexobj = malloc(512);
