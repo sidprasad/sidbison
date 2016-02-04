@@ -286,15 +286,16 @@ char *br() {
     char *pos;
     if((pos=strchr(token, '\n')) != NULL)
         *pos = '\0';
-    
-    while(strcmp(token, c_token) != 0) {
-        next();
-        read_from_ibison();
+   
+    while(!c_token || strcmp(token, c_token) != 0) {
+            next();
+            read_from_ibison();
     }
 
+        sprintf(to_return, "br: Broken at %s\n", c_token);
+        
 
 
-    sprintf(to_return, "br: Broken at %s\n", c_token);
     return to_return;
 }
 
@@ -330,7 +331,7 @@ char *read_from_ibison()
 
             }
 
-            if(strcmp(out, state_response) == 0) { /*TODO*/
+            if(strcmp(out, state_response) == 0) {
                free(out);
 
                if(!rule_pos) {
