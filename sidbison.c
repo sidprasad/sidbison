@@ -50,6 +50,7 @@ char *last_reduced; /* Holds the last reduced rule in the specification */
 char *rule_pos;
 /*********************************/
 
+int count_ws (char *s);
 
 
 void quit() {
@@ -119,6 +120,14 @@ char *step() {
 
 char *crule() {
 
+
+    if( !state_stk) {
+
+        char *to_return = malloc(512);
+        sprintf(to_return, "crule: %s", "Parsing has not begun yet, please take a step\n");
+        return to_return;
+
+    }
     system("truncate -s 0 intermediate");
     int pid;
     FILE *tmp = child_in;
@@ -128,7 +137,7 @@ char *crule() {
     char *old_current_token = NULL;
     if (pid = fork()) {
        
-
+        
         if(c_token) {
             old_current_token = malloc(256);
             strcpy(old_current_token, c_token);
@@ -155,16 +164,18 @@ char *crule() {
             read_from_ibison();
         }
       
-        int old_len = strlen(state_stk);
+        int old_len = count_ws(state_stk);
         int old_ps = parser_state;        
         short len_changed;
         short len_equal_and_state_changed;
-        
+       
         do {
             steprule();
             len_changed = strlen(state_stk) < old_len;
-            len_equal_and_state_changed = (strlen(state_stk) == old_len)
+            len_equal_and_state_changed = (count_ws(state_stk) == old_len)
                                         && (old_ps != parser_state);
+
+            
         } while(!len_changed && !len_equal_and_state_changed && !eof);
         /* Better readability w/o DeMorgan simplification */
         eof = 0; /* Reset eof if encountered */
@@ -584,4 +595,19 @@ char* execute_command(char* command) {
 }
 
 
+/* Counts the number of whitespaces in a string */
+int count_ws (char *s) {
+
+    int count = 0;
+    if(s) {
+        while(*s != '\0') {
+
+            if(isspace(*s)) {
+                count++;
+            }
+            s++;
+        }
+    }
+    return count;
+}
 
