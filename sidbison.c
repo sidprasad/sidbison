@@ -592,7 +592,7 @@ char* execute_command(char* command) {
         isbison = 0;
     }  else {
         final = malloc(512);
-        sprintf(final,"Unrecognized command '%s'\n", command);
+        sprintf(final,"Unrecognized command %s\n", command);
     }
 
     return final;
