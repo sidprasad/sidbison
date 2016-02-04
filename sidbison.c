@@ -273,7 +273,7 @@ char *br() {
     char *to_return = malloc(128);
     char token [256];
     char final [300];
-    printf("Character: ");
+    printf("Token: ");
     fflush(stdout);
     fgets(token, sizeof(token), stdin);
     
@@ -291,6 +291,9 @@ char *br() {
         next();
         read_from_ibison();
     }
+
+
+
     sprintf(to_return, "br: Broken at %s\n", c_token);
     return to_return;
 }
