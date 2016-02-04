@@ -168,14 +168,14 @@ char *crule() {
         int old_ps = parser_state;        
         short len_changed;
         short len_equal_and_state_changed;
-       
+      
         do {
             steprule();
-            len_changed = strlen(state_stk) < old_len;
-            len_equal_and_state_changed = (count_ws(state_stk) == old_len)
+            int new_len = count_ws(state_stk);
+            len_changed = new_len < old_len;
+            len_equal_and_state_changed = (new_len == old_len)
                                         && (old_ps != parser_state);
 
-            
         } while(!len_changed && !len_equal_and_state_changed && !eof);
         /* Better readability w/o DeMorgan simplification */
         eof = 0; /* Reset eof if encountered */
