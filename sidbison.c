@@ -309,6 +309,13 @@ char *read_from_ibison()
             if(isbison) {
                 printf("(ibison) %s\n",out);
             }
+
+            if(strstr(out, "Parser error")) {
+                printf("Parser error! String not accepted\n");
+                quit();
+
+            }
+
             if(strcmp(out, state_response) == 0) { /*TODO*/
                free(out);
 

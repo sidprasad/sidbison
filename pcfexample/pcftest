@@ -1,0 +1,3 @@
+
+fix (fn f: nat -> nat.fn x : nat. if zero(x) then succ(0) else pred (x))
+
