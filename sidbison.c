@@ -57,7 +57,7 @@ void quit() {
 
     printf("Quitting\n");
     kill(int_pid, 9);
-    system("rm tmp/intermediate");
+    system("rm -r tmp/intermediate");
     exit(0);
 
 }
@@ -453,6 +453,9 @@ int main(int argc, char *argv[])
     last_reduced = NULL;
     rule_pos = NULL;
     state_stk = NULL;
+
+    system("mkdir tmp");
+
 
     pipe(fd_);
     in_crule = 0;
