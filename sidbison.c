@@ -57,7 +57,7 @@ void quit() {
 
     printf("Quitting\n");
     kill(int_pid, 9);
-    system("rm intermediate");
+    system("rm tmp/intermediate");
     exit(0);
 
 }
@@ -105,7 +105,7 @@ char *step() {
         /*Reduce*/
         red = 0;
         sprintf(oldtoken, "A new rule was parsed: %s\n",last_reduced);
-        system("truncate -s 0 intermediate");
+        system("truncate -s 0 tmp/intermediate");
     } else if (strcmp(oldtoken, c_token) != 0) {
         /* Encountered a new token*/
         sprintf(oldtoken, "A new token was encountered: %s\n", c_token);
@@ -128,7 +128,7 @@ char *crule() {
         return to_return;
 
     }
-    system("truncate -s 0 intermediate");
+    system("truncate -s 0 tmp/intermediate");
     int pid;
     FILE *tmp = child_in;
     int fd_[2]; 
@@ -193,6 +193,8 @@ char *crule() {
         close(fd_[0]);
         execl(bison, bison, flags,  bspec, NULL);       
     }
+
+
     in_crule = 0;
 
     if(c_token)
@@ -203,14 +205,14 @@ char *crule() {
     kill(pid,9);
     char *to_return = malloc(512);
     sprintf(to_return, "crule: %s", last_reduced);
-    system("truncate -s 0 intermediate");
+    system("truncate -s 0 tmp/intermediate");
     str(); /* Restore state*/
     return to_return;
 }
 
 char *steprule() {
 
-    system("truncate -s 0 intermediate");
+    system("truncate -s 0 tmp/intermediate");
     red = 0;
     while(!red && !eof) {
         next();
@@ -261,7 +263,7 @@ char *rulepos(){
     fwrite(state, strlen(state), 1, child_in);
     fflush(child_in);
     read_from_ibison();
-    system("truncate -s 0 intermediate");
+    system("truncate -s 0 tmp/intermediate");
     char* curr_rule = crule();
     char *to_return = malloc(1024);
     sprintf(to_return, "%sWhere %s", rule_pos, curr_rule);
@@ -326,8 +328,19 @@ char *read_from_ibison()
             }
 
             if(strstr(out, "Parser error")) {
-                printf("Parser error! String not accepted\n");
-                quit();
+                if(in_crule) {
+
+                    if(last_reduced)
+                        free(last_reduced);
+                    last_reduced = malloc(128);
+                    strcpy(last_reduced, "Could not indentify crule as string was not accepted\n");
+                    eof = 1;
+                    break;
+
+                } else {
+                    printf("Parser error! String not accepted\n");
+                    quit();
+                }
 
             }
 
@@ -425,7 +438,7 @@ char *read_from_ibison()
             dup(fd[1]);
             close(fd[1]);
             close(fd[0]);
-            execl("/bin/cat", "/bin/cat",  "intermediate", NULL);
+            execl("/bin/cat", "/bin/cat",  "tmp/intermediate", NULL);
      }
 }
 
@@ -465,7 +478,7 @@ int main(int argc, char *argv[])
     strcpy(lexobj, argv[2]);
     strcpy(bspec, argv[1]);
 
-    intermediate = fopen("intermediate", "a+");
+    intermediate = fopen("tmp/intermediate", "a+");
     setvbuf(intermediate, NULL, _IONBF, BUFSIZ);
     inter_fd = fileno(intermediate); 
     
@@ -528,9 +541,9 @@ char* execute_command(char* command) {
     size_t n = 0;   
     if (strcmp(command, "crule\n") == 0) {
         
-        system("truncate -s 0 intermediate");
+        system("truncate -s 0 tmp/intermediate");
         final = crule();
-        system("truncate -s 0 intermediate");
+        system("truncate -s 0 tmp/intermediate");
     
     } else if (strcmp(command, "ctkn\n") == 0) {
         
@@ -542,7 +555,7 @@ char* execute_command(char* command) {
 
     } else if (strcmp(command, "rulepos\n") == 0) { 
 
-        system("truncate -s 0 intermediate");
+        system("truncate -s 0 tmp/intermediate");
         final = rulepos();
     
     } else if (strcmp(command, "str\n") == 0) {
@@ -551,9 +564,9 @@ char* execute_command(char* command) {
 
     } else if (strcmp(command, "steprule\n") == 0) {
     
-        system("truncate -s 0 intermediate");
+        system("truncate -s 0 tmp/intermediate");
         final = steprule();
-        system("truncate -s 0 intermediate"); /*Must truncate after a reduce */
+        system("truncate -s 0 tmp/intermediate"); /*Must truncate after a reduce */
 
     } else if (strcmp(command, "br\n") == 0) {
     
@@ -563,7 +576,7 @@ char* execute_command(char* command) {
 
         test_file = malloc(512);
 
-        system("truncate -s 0 intermediate");
+        system("truncate -s 0 tmp/intermediate");
         strcpy(test_file, command);
         fwrite(test_file, strlen(test_file), 1, child_in);
         fflush(child_in);

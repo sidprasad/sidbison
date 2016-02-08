@@ -5,6 +5,8 @@ sidBison is designed to be a step-through debugger for Bison 2.3 specifications 
 
 Further information can be found on the system wiki.
 
+`.err` files denote inputs that are not accepted by the grammar
+
 
 
 
