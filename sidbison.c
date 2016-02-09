@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
         if(argc == 2) {
             if(strcmp("-h", argv[1]) == 0) {
 
-                printf("sidBison %d\n\ncrule: Returns the current rule being parsed.\nstepruule: Steps to the next rule parsed in the Bison specification\nstrIdentifies the current position in the entire parsing process\nbrBreaks at a particular input token\nstep: Steps to the next action taken by the parser\nctkn: Displays the current token\nrulepos: Current position in rule\ntest <filename> Accepts a file to be debugged\nquit: Ends program\n", version);
+                printf("\nWelcome to sidBison %d\n\ncrule: Returns the current rule being parsed.\nstepruule: Steps to the next rule parsed in the Bison specification\nstrIdentifies the current position in the entire parsing process\nbrBreaks at a particular input token\nstep: Steps to the next action taken by the parser\nctkn: Displays the current token\nrulepos: Current position in rule\ntest <filename> Accepts a file to be debugged\nquit: Ends program\n", version);
 
             } else if (strcmp("-v", argv[1]) == 0) {
                 printf("Version %d\n", version);
