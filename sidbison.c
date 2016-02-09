@@ -1,14 +1,6 @@
-/* Senior Thesis
- * iBison: Siddhartha Prasad, January 2016. 
- * 
- *  Compile With: gcc -g sidbison.c -lnsl -o sidbison
+/* 
+ * iBison: Siddhartha Prasad, Feb 2016. 
  *
- *  Run with bison specification and lexer shared object as input
- *
- *
- *  TODO:
- *      - ibison option things should be recorded too or removed (maybe only as a backdoor)
- * 
 */
 
 #include "sidbison.h"
@@ -50,8 +42,8 @@ char *last_reduced; /* Holds the last reduced rule in the specification */
 char *rule_pos;
 /*********************************/
 
-int count_ws (char *s);
-
+int count_ws (char *s); /* Counts the number of white spaces in a string */
+/*********************************/
 
 void quit() {
 
@@ -89,7 +81,6 @@ void next() {
 
 char *step() {
 
-    
     char * oldtoken = malloc(256);
     
     if(c_token)

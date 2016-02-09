@@ -1,3 +1,10 @@
+/*
+ * Stepwise Interactive Debugger for Bison
+ * Feb 2016
+ *
+ */
+
+
 #ifndef SIDBISON_H
 #define SIDBISON_H
 
@@ -5,7 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
 
 
 char *str();                            /* Implements the str command */
