@@ -1,0 +1,1194 @@
+
+Welcome to Bison 2.3 interactive mode. Type "help" for assistance.
+Please report bugs to spopur2@uic.edu.
+[?1034h
+(interactive) lexer impcoreexample/lex.so
+
+Lexer loaded successfully.
+
+(interactive) test impcoreexample/test.imp 
+
+Opening file...ready to test.
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 1
+
+Stacks:(states, tokens)
+0 1 
+( 
+
+(interactive) next
+
+Reading a token...next token is: define (DEFINE)
+
+(interactive) next
+
+Token is shifted. Entering state 11
+
+Stacks:(states, tokens)
+0 1 11 
+( define 
+
+(interactive) next
+
+Reading a token...next token is: sigma (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 27
+
+Stacks:(states, tokens)
+0 1 11 27 
+( define sigma 
+
+(interactive) next
+
+Popping stack: sigma	
+
+Reduced by rule #34
+functionname: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 
+( define functionname 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 48
+
+Stacks:(states, tokens)
+0 1 11 34 48 
+( define functionname ( 
+
+(interactive) next
+
+Reading a token...next token is: m (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 48 3 
+( define functionname ( m 
+
+(interactive) next
+
+Popping stack: m	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 48 60 
+( define functionname ( variablename 
+
+(interactive) next
+
+Reading a token...next token is: n (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 48 60 3 
+( define functionname ( variablename n 
+
+(interactive) next
+
+Popping stack: n	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 48 60 60 
+( define functionname ( variablename variablename 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 58
+
+Stacks:(states, tokens)
+0 1 11 34 48 60 60 58 
+( define functionname ( variablename variablename ) 
+
+(interactive) next
+
+Popping stack: )	
+
+Reduced by rule #20
+variablenamestar: RPAREN
+
+Stacks:(states, tokens)
+0 1 11 34 48 60 60 66 
+( define functionname ( variablename variablename variablenamestar 
+
+(interactive) next
+
+Popping stack: variablenamestar	variablename	
+
+Reduced by rule #21
+variablenamestar: variablename variablenamestar
+
+Stacks:(states, tokens)
+0 1 11 34 48 60 66 
+( define functionname ( variablename variablenamestar 
+
+(interactive) next
+
+Popping stack: variablenamestar	variablename	
+
+Reduced by rule #21
+variablenamestar: variablename variablenamestar
+
+Stacks:(states, tokens)
+0 1 11 34 48 59 
+( define functionname ( variablenamestar 
+
+(interactive) next
+
+Popping stack: variablenamestar	(	
+
+Reduced by rule #19
+formals: LPAREN variablenamestar
+
+Stacks:(states, tokens)
+0 1 11 34 49 
+( define functionname formals 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 37
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 
+( define functionname formals ( 
+
+(interactive) next
+
+Reading a token...next token is: if (IF)
+
+(interactive) next
+
+Token is shifted. Entering state 15
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 
+( define functionname formals ( if 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 37
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 
+( define functionname formals ( if ( 
+
+(interactive) next
+
+Reading a token...next token is: > (GT)
+
+(interactive) next
+
+Token is shifted. Entering state 24
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 24 
+( define functionname formals ( if ( > 
+
+(interactive) next
+
+Popping stack: >	
+
+Reduced by rule #31
+primitive: GT
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 29 
+( define functionname formals ( if ( primitive 
+
+(interactive) next
+
+Popping stack: primitive	
+
+Reduced by rule #24
+function: primitive
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 
+( define functionname formals ( if ( function 
+
+(interactive) next
+
+Reading a token...next token is: m (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 3 
+( define functionname formals ( if ( function m 
+
+(interactive) next
+
+Popping stack: m	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 9 
+( define functionname formals ( if ( function variablename 
+
+(interactive) next
+
+Popping stack: variablename	
+
+Reduced by rule #11
+exp: variablename
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 
+( define functionname formals ( if ( function exp 
+
+(interactive) next
+
+Reading a token...next token is: n (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 3 
+( define functionname formals ( if ( function exp n 
+
+(interactive) next
+
+Popping stack: n	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 9 
+( define functionname formals ( if ( function exp variablename 
+
+(interactive) next
+
+Popping stack: variablename	
+
+Reduced by rule #11
+exp: variablename
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 43 
+( define functionname formals ( if ( function exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 42
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 43 42 
+( define functionname formals ( if ( function exp exp ) 
+
+(interactive) next
+
+Popping stack: )	
+
+Reduced by rule #17
+expstar: RPAREN
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 43 55 
+( define functionname formals ( if ( function exp exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 43 55 
+( define functionname formals ( if ( function exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 37 28 46 
+( define functionname formals ( if ( function expstar 
+
+(interactive) next
+
+Popping stack: expstar	function	(	
+
+Reduced by rule #16
+exp: LPAREN function expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 
+( define functionname formals ( if exp 
+
+(interactive) next
+
+Reading a token...next token is: 0 (NUMERAL)
+
+(interactive) next
+
+Token is shifted. Entering state 2
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 2 
+( define functionname formals ( if exp 0 
+
+(interactive) next
+
+Popping stack: 0	
+
+Reduced by rule #22
+literal: NUMERAL
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 8 
+( define functionname formals ( if exp literal 
+
+(interactive) next
+
+Popping stack: literal	
+
+Reduced by rule #10
+exp: literal
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 
+( define functionname formals ( if exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 37
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 
+( define functionname formals ( if exp exp ( 
+
+(interactive) next
+
+Reading a token...next token is: + (PLUS)
+
+(interactive) next
+
+Token is shifted. Entering state 18
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 18 
+( define functionname formals ( if exp exp ( + 
+
+(interactive) next
+
+Popping stack: +	
+
+Reduced by rule #25
+primitive: PLUS
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 29 
+( define functionname formals ( if exp exp ( primitive 
+
+(interactive) next
+
+Popping stack: primitive	
+
+Reduced by rule #24
+function: primitive
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 
+( define functionname formals ( if exp exp ( function 
+
+(interactive) next
+
+Reading a token...next token is: m (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 3 
+( define functionname formals ( if exp exp ( function m 
+
+(interactive) next
+
+Popping stack: m	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 9 
+( define functionname formals ( if exp exp ( function variablename 
+
+(interactive) next
+
+Popping stack: variablename	
+
+Reduced by rule #11
+exp: variablename
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 
+( define functionname formals ( if exp exp ( function exp 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 37
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 
+( define functionname formals ( if exp exp ( function exp ( 
+
+(interactive) next
+
+Reading a token...next token is: sigma (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 27
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 27 
+( define functionname formals ( if exp exp ( function exp ( sigma 
+
+(interactive) next
+
+Popping stack: sigma	
+
+Reduced by rule #34
+functionname: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 30 
+( define functionname formals ( if exp exp ( function exp ( functionname 
+
+(interactive) next
+
+Popping stack: functionname	
+
+Reduced by rule #23
+function: functionname
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 
+( define functionname formals ( if exp exp ( function exp ( function 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 37
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 
+( define functionname formals ( if exp exp ( function exp ( function ( 
+
+(interactive) next
+
+Reading a token...next token is: + (PLUS)
+
+(interactive) next
+
+Token is shifted. Entering state 18
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 18 
+( define functionname formals ( if exp exp ( function exp ( function ( + 
+
+(interactive) next
+
+Popping stack: +	
+
+Reduced by rule #25
+primitive: PLUS
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 29 
+( define functionname formals ( if exp exp ( function exp ( function ( primitive 
+
+(interactive) next
+
+Popping stack: primitive	
+
+Reduced by rule #24
+function: primitive
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 
+( define functionname formals ( if exp exp ( function exp ( function ( function 
+
+(interactive) next
+
+Reading a token...next token is: m (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 3 
+( define functionname formals ( if exp exp ( function exp ( function ( function m 
+
+(interactive) next
+
+Popping stack: m	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 9 
+( define functionname formals ( if exp exp ( function exp ( function ( function variablename 
+
+(interactive) next
+
+Popping stack: variablename	
+
+Reduced by rule #11
+exp: variablename
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp 
+
+(interactive) next
+
+Reading a token...next token is: 1 (NUMERAL)
+
+(interactive) next
+
+Token is shifted. Entering state 2
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 2 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp 1 
+
+(interactive) next
+
+Popping stack: 1	
+
+Reduced by rule #22
+literal: NUMERAL
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 8 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp literal 
+
+(interactive) next
+
+Popping stack: literal	
+
+Reduced by rule #10
+exp: literal
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 43 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 42
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 43 42 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp exp ) 
+
+(interactive) next
+
+Popping stack: )	
+
+Reduced by rule #17
+expstar: RPAREN
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 43 55 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 43 55 
+( define functionname formals ( if exp exp ( function exp ( function ( function exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 37 28 46 
+( define functionname formals ( if exp exp ( function exp ( function ( function expstar 
+
+(interactive) next
+
+Popping stack: expstar	function	(	
+
+Reduced by rule #16
+exp: LPAREN function expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 
+( define functionname formals ( if exp exp ( function exp ( function exp 
+
+(interactive) next
+
+Reading a token...next token is: n (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 3
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 3 
+( define functionname formals ( if exp exp ( function exp ( function exp n 
+
+(interactive) next
+
+Popping stack: n	
+
+Reduced by rule #33
+variablename: NAME
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 9 
+( define functionname formals ( if exp exp ( function exp ( function exp variablename 
+
+(interactive) next
+
+Popping stack: variablename	
+
+Reduced by rule #11
+exp: variablename
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 43 
+( define functionname formals ( if exp exp ( function exp ( function exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 42
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 43 42 
+( define functionname formals ( if exp exp ( function exp ( function exp exp ) 
+
+(interactive) next
+
+Popping stack: )	
+
+Reduced by rule #17
+expstar: RPAREN
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 43 55 
+( define functionname formals ( if exp exp ( function exp ( function exp exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 43 55 
+( define functionname formals ( if exp exp ( function exp ( function exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 37 28 46 
+( define functionname formals ( if exp exp ( function exp ( function expstar 
+
+(interactive) next
+
+Popping stack: expstar	function	(	
+
+Reduced by rule #16
+exp: LPAREN function expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 43 
+( define functionname formals ( if exp exp ( function exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 42
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 43 42 
+( define functionname formals ( if exp exp ( function exp exp ) 
+
+(interactive) next
+
+Popping stack: )	
+
+Reduced by rule #17
+expstar: RPAREN
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 43 55 
+( define functionname formals ( if exp exp ( function exp exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 43 55 
+( define functionname formals ( if exp exp ( function exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 37 28 46 
+( define functionname formals ( if exp exp ( function expstar 
+
+(interactive) next
+
+Popping stack: expstar	function	(	
+
+Reduced by rule #16
+exp: LPAREN function expstar
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 64 
+( define functionname formals ( if exp exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 68
+
+Stacks:(states, tokens)
+0 1 11 34 49 37 15 40 53 64 68 
+( define functionname formals ( if exp exp exp ) 
+
+(interactive) next
+
+Popping stack: )	exp	exp	exp	if	(	
+
+Reduced by rule #13
+exp: LPAREN IF exp exp exp RPAREN
+
+Stacks:(states, tokens)
+0 1 11 34 49 61 
+( define functionname formals exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 67
+
+Stacks:(states, tokens)
+0 1 11 34 49 61 67 
+( define functionname formals exp ) 
+
+(interactive) next
+
+Popping stack: )	exp	formals	functionname	define	(	
+
+Reduced by rule #5
+def: LPAREN DEFINE functionname formals exp RPAREN
+
+Stacks:(states, tokens)
+0 5 
+def 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 1
+
+Stacks:(states, tokens)
+0 5 1 
+def ( 
+
+(interactive) next
+
+Reading a token...next token is: check-expect (CHECKEXPECT)
+
+(interactive) next
+
+Token is shifted. Entering state 13
+
+Stacks:(states, tokens)
+0 5 1 13 
+def ( check-expect 
+
+(interactive) next
+
+Reading a token...next token is: ( (LPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 37
+
+Stacks:(states, tokens)
+0 5 1 13 37 
+def ( check-expect ( 
+
+(interactive) next
+
+Reading a token...next token is: sigma (NAME)
+
+(interactive) next
+
+Token is shifted. Entering state 27
+
+Stacks:(states, tokens)
+0 5 1 13 37 27 
+def ( check-expect ( sigma 
+
+(interactive) next
+
+Popping stack: sigma	
+
+Reduced by rule #34
+functionname: NAME
+
+Stacks:(states, tokens)
+0 5 1 13 37 30 
+def ( check-expect ( functionname 
+
+(interactive) next
+
+Popping stack: functionname	
+
+Reduced by rule #23
+function: functionname
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 
+def ( check-expect ( function 
+
+(interactive) next
+
+Reading a token...next token is: 3 (NUMERAL)
+
+(interactive) next
+
+Token is shifted. Entering state 2
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 2 
+def ( check-expect ( function 3 
+
+(interactive) next
+
+Popping stack: 3	
+
+Reduced by rule #22
+literal: NUMERAL
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 8 
+def ( check-expect ( function literal 
+
+(interactive) next
+
+Popping stack: literal	
+
+Reduced by rule #10
+exp: literal
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 
+def ( check-expect ( function exp 
+
+(interactive) next
+
+Reading a token...next token is: 4 (NUMERAL)
+
+(interactive) next
+
+Token is shifted. Entering state 2
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 2 
+def ( check-expect ( function exp 4 
+
+(interactive) next
+
+Popping stack: 4	
+
+Reduced by rule #22
+literal: NUMERAL
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 8 
+def ( check-expect ( function exp literal 
+
+(interactive) next
+
+Popping stack: literal	
+
+Reduced by rule #10
+exp: literal
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 43 
+def ( check-expect ( function exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 42
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 43 42 
+def ( check-expect ( function exp exp ) 
+
+(interactive) next
+
+Popping stack: )	
+
+Reduced by rule #17
+expstar: RPAREN
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 43 55 
+def ( check-expect ( function exp exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 43 55 
+def ( check-expect ( function exp expstar 
+
+(interactive) next
+
+Popping stack: expstar	exp	
+
+Reduced by rule #18
+expstar: exp expstar
+
+Stacks:(states, tokens)
+0 5 1 13 37 28 46 
+def ( check-expect ( function expstar 
+
+(interactive) next
+
+Popping stack: expstar	function	(	
+
+Reduced by rule #16
+exp: LPAREN function expstar
+
+Stacks:(states, tokens)
+0 5 1 13 38 
+def ( check-expect exp 
+
+(interactive) next
+
+Reading a token...next token is: 3 (NUMERAL)
+
+(interactive) next
+
+Token is shifted. Entering state 2
+
+Stacks:(states, tokens)
+0 5 1 13 38 2 
+def ( check-expect exp 3 
+
+(interactive) next
+
+Popping stack: 3	
+
+Reduced by rule #22
+literal: NUMERAL
+
+Stacks:(states, tokens)
+0 5 1 13 38 8 
+def ( check-expect exp literal 
+
+(interactive) next
+
+Popping stack: literal	
+
+Reduced by rule #10
+exp: literal
+
+Stacks:(states, tokens)
+0 5 1 13 38 51 
+def ( check-expect exp exp 
+
+(interactive) next
+
+Reading a token...next token is: ) (RPAREN)
+
+(interactive) next
+
+Token is shifted. Entering state 62
+
+Stacks:(states, tokens)
+0 5 1 13 38 51 62 
+def ( check-expect exp exp ) 
+
+(interactive) next
+
+Popping stack: )	exp	exp	check-expect	(	
+
+Reduced by rule #8
+unittest: LPAREN CHECKEXPECT exp exp RPAREN
+
+Stacks:(states, tokens)
+0 5 6 
+def unittest 
+
+(interactive) next
+
+Popping stack: unittest	
+
+Reduced by rule #7
+def: unittest
+
+Stacks:(states, tokens)
+0 5 5 
+def def 
+
+(interactive) next
+
+Reading a token...next token is: <<EOF>> ($end)
+
+(interactive) next
+
+Popping stack: 
+
+Reduced by rule #1
+program: /* empty */
+
+Stacks:(states, tokens)
+0 5 5 32 
+def def program 
+
+(interactive) next
+
+Popping stack: program	def	
+
+Reduced by rule #2
+program: def program
+
+Stacks:(states, tokens)
+0 5 32 
+def program 
+
+(interactive) next
+
+Popping stack: program	def	
+
+Reduced by rule #2
+program: def program
+
+Stacks:(states, tokens)
+0 4 
+program 
+
+(interactive) next
+
+String is accepted.
+ibison: fork: Resource temporarily unavailable
+
+ibison: fork: Resource temporarily unavailable

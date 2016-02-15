@@ -1,4 +1,5 @@
 %{
+#include "heading.h"
 # include "imp.tab.h"
 # undef yywrap
 # define yywrap() 1
@@ -10,7 +11,7 @@
 %option noyywrap
 
 blank [ \t]
-word [a-zA-Z][a-zA-Z0-9]*
+word [a-zA-Z][a-zA-Z0-9\-]*
 int [0-9]+
 
 
@@ -36,8 +37,8 @@ int [0-9]+
 "begin"         return BEGN;
 "print"         return PRINT;
 "check-err"     return CHECKERR;
-{int}           {yylval = malloc(128); strcpy(yylval, yytext); return NUMERAL;}
-{word}          {yylval = malloc(128); strcpy(yylval, yytext); return NAME;}
+{int}           {return NUMERAL;}
+{word}          {return NAME;}
 .               {fprintf(stderr, "Invalid token!\n");}
 
 %%

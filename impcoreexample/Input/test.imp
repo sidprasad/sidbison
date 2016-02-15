@@ -1,0 +1,13 @@
+(define sigma (m n)
+        (if (> m n)
+                0
+                (+ m (sigma (+ m 1) n ))
+        )
+)
+
+(check-expect 
+        (sigma 3 4)
+         3)
+
+
+
