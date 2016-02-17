@@ -316,6 +316,7 @@ char *read_from_ibison()
         while(getline(&out, &n, inter_in) != -1) {
             if(isbison) {
                 printf("(ibison) %s\n",out);
+                continue;
             }
 
             if(strstr(out, "Parser error")) {
@@ -455,7 +456,7 @@ int main(int argc, char *argv[])
         if(argc == 2) {
             if(strcmp("-h", argv[1]) == 0) {
 
-                printf("\nWelcome to sidBison %d\n\ncrule: Returns the current rule being parsed.\nsteprule: Steps to the next rule parsed in the Bison specification\nstr: Identifies the current position in the entire parsing process\nbr: Breaks at a particular input token\nstep: Steps to the next action taken by the parser\nctkn: Displays the current token\nrulepos: Current position in rule\ntest <filename>: Accepts a file to be debugged\nquit: Ends program\n", version);
+                printf("\nWelcome to sidBison %d\n\ncrule: Returns the current rule being parsed.\nsteprule: Steps to the next rule parsed in the Bison specification\nstr: Identifies the current position in the entire parsing process\nbr: Breaks at a particular input token\nstep: Steps to the next action taken by the parser\nctkn: Displays the current token\nrulepos: Current position in rule\ntest <filename>: Accepts a file to be debugged\nibison: Allows for iBison commands to be input\nquit: Ends program\n", version);
 
             } else if (strcmp("-v", argv[1]) == 0) {
                 printf("Version %d\n", version);
@@ -583,7 +584,7 @@ char* execute_command(char* command) {
     
     } else if (strcmp(command, "ibison\n") == 0) {
 
-
+        system("truncate -s 0 tmp/intermediate");
         printf("(ibison)");
         fflush(stdout);
         isbison = 1;
