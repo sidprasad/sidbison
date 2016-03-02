@@ -169,6 +169,7 @@ char *crule() {
 
         } while(!len_changed && !len_equal_and_state_changed && !eof);
         /* Better readability w/o DeMorgan simplification */
+
         eof = 0; /* Reset eof if encountered */
 
     } else {
@@ -236,14 +237,6 @@ char *str() {
 
 char *rulepos(){
 
- /* Not implemented yet
- *
- * Find current state
- * Find crule
- * Look for instances of crule in the current state
- *
- * */
-    
     char *state = malloc(32);
     if(parser_state < 0) {
         strcpy(state, "No rule being parsed yet\n");
@@ -561,7 +554,7 @@ char* execute_command(char* command) {
     
         system("truncate -s 0 tmp/intermediate");
         final = steprule();
-        system("truncate -s 0 tmp/intermediate"); /*Must truncate after a reduce */
+        system("truncate -s 0 tmp/intermediate");
 
     } else if (strcmp(command, "br\n") == 0) {
     
@@ -622,4 +615,5 @@ int count_ws (char *s) {
     }
     return count;
 }
+
 
