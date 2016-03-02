@@ -1,0 +1,11 @@
+(define nthprime-from (n x)
+    (if (prime? x)
+        (if (= n 0)
+        x
+        (nthprime-from  (- n 1) (+ x 1)))
+    (nthprime-from n (+ x 1))))
+
+(define nthprime (n)
+    (nthprime-from (-n 1) 2))
+
+
