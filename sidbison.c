@@ -4,6 +4,12 @@
 */
 
 #include "sidbison.h"
+#include <sys/time.h>
+#include <sys/resource.h>
+#ifndef DEBUGLOG
+#   define DEBUGLOG 0
+#endif
+
 
 /**********/
 const int version = 1;
@@ -480,6 +486,10 @@ int main(int argc, char *argv[])
         char *response = NULL;
         size_t n = 0;
 
+        /* For debugging */
+        struct rusage start;
+        struct rusage end;
+        /*****************/
 
         fwrite(lexer, strlen(lexer), 1, child_in);
         fflush(child_in);
@@ -495,12 +505,43 @@ int main(int argc, char *argv[])
             if(strcmp(command, "quit\n") == 0) {
                quit(); 
             }
- 
+
+
+
+
+            /* If debugging is on */
+            if(DEBUGLOG) {
+                getrusage(RUSAGE_SELF, &start);
+            } 
             response = execute_command(command);
+
             if(response) {
                 fprintf(stdout, response);
                 free(response);
-            }   
+            }
+
+            if(DEBUGLOG) {
+              getrusage(RUSAGE_SELF, &end);
+              double start_u = (double)start.ru_utime.tv_sec
+                + ((double) start.ru_utime.tv_usec)/1e6;
+              double start_s = (double)start.ru_utime.tv_sec
+                + ((double)start.ru_stime.tv_usec)/1e6;
+
+              
+              double end_u = (double)end.ru_utime.tv_sec
+                + ((double) end.ru_utime.tv_usec)/1e6;
+              double end_s = (double)end.ru_utime.tv_sec
+                + ((double)end.ru_stime.tv_usec)/1e6;
+
+
+              double u = end_u - start_u;
+              double s = end_s - start_s;
+
+              fprintf(stderr, "%s: User:%e System%e\n", command, u,s);
+
+
+            }            
+
             if(command)
                 free(command);
             command = NULL;
