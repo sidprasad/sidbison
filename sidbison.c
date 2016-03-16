@@ -330,7 +330,11 @@ char *br() {
 
 /* This is a parsing function
  *
- * O(number of parser states)
+ *      - We impose a hard bound on the size of the state and token stacks
+ *      - Aside from the state and token stack sizes, the size of ibison
+ *        output isbounded.
+ *
+ *  Thus, while constants are large, read_from_ibison takes O(1)
  *
  * */
 char *read_from_ibison() 
@@ -424,13 +428,17 @@ char *read_from_ibison()
               &parser_state) == 1) {
 
             } else if (strcmp(out, "Stacks:(states, tokens)\n") == 0) {
+              
               free(out);
               out = NULL;
               getline(&out, &n, inter_in);
               
               if(state_stk)
                     free(state_stk);
-              state_stk = malloc(512);
+              state_stk = malloc(512*2);
+
+                /* These's an assumption about the size of the state
+                 * stack */ 
               strcpy(state_stk, out);
 
               char *last_space = NULL;
