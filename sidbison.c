@@ -85,6 +85,11 @@ void next() {
     }
 }
 
+/*
+ * O = read_from_ibison
+ *
+ *
+ */
 char *step() {
 
     char * oldtoken = malloc(256);
@@ -113,7 +118,11 @@ char *step() {
     /* Reusing the oldtoken variable here */
     return oldtoken;
 }
-
+/*
+ *
+ * O = n* |G| * read_from_ibison + (n*steprule *num states)
+ *
+ */
 
 char *crule() {
 
@@ -208,6 +217,12 @@ char *crule() {
     return to_return;
 }
 
+/*
+ *
+ * O = n*read_from_ibison
+ *
+ *
+ */
 char *steprule() {
 
     system("truncate -s 0 tmp/intermediate");
@@ -223,7 +238,12 @@ char *steprule() {
     return msg;
 }
 
-
+/*
+ *
+ * O = read_from_ibison
+ *
+ *
+ */
 char *ctkn() {
 
     char *to_return = malloc(128);
@@ -231,7 +251,10 @@ char *ctkn() {
     return to_return;
 
 }
-
+/*
+ * O(size of token stack) =  O(n) + read_from_ibison
+ *
+ */
 char *str() {
     fwrite("stack\n", strlen("stack\n"), 1, child_in);
     fflush(child_in);
@@ -240,6 +263,13 @@ char *str() {
     sprintf(to_return, "str: %s\n",tkn_stk); 
     return to_return;
 }
+
+/*
+ * Looking up a state takes constant time.
+ *
+ * O = looking up a state + crule
+ *
+ */
 
 char *rulepos(){
 
@@ -259,6 +289,12 @@ char *rulepos(){
     sprintf(to_return, "%sWhere %s", rule_pos, curr_rule);
     return to_return;
 }
+
+/* Each bison step takes constant time */
+/*
+ * O(n * time each step takes)
+ *
+ */
 
 char *br() {
 
@@ -292,7 +328,11 @@ char *br() {
 }
 
 
-/* This is a parsing function */
+/* This is a parsing function
+ *
+ * O(number of parser states)
+ *
+ * */
 char *read_from_ibison() 
 {
     FILE *inter_in;
