@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
 
               double u = end_u - start_u;
               double s = end_s - start_s;
-
+              command[strlen(command) - 1] = '\0';
               fprintf(stderr, "%s: User:%e System%e\n", command, u,s);
 
 
