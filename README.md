@@ -4,6 +4,6 @@ sidBison is designed to be a step-through debugger for Bison 2.3 specifications 
 
 
 
-sidBison was written for `Comp 197: Honors Thesis` at Tufts University under the supervision of Prof. Kathleen Fisher.
+sidBison was written for `Comp 198: Honors Thesis` at Tufts University under the supervision of Prof. Kathleen Fisher.
 
 
