@@ -1,0 +1,728 @@
+\begin{appendices}
+
+
+\chapter{A Quick Overview of Formal Grammars}
+
+A formal grammar is a set of rules that describe how strings might be produced in a language.  It can function as both a recognizer and a language generating construct. 
+
+\paragraph{Terminals}
+
+Terminal symbols are actual members of the alphabet that compose the language described by a formal grammar.
+
+\paragraph{Non-terminals}
+
+Non-terminal symbols can be thought of as textit{syntactic variables} that describe groupings or combinations of other symbols, as described by the rules of a formal grammar.
+
+\section{Context Free Grammars}
+
+A context-free grammar is a special kind of formal grammar where each rule is of the form $E \rightarrow \alpha$, where $E$ is a non-terminal symbol and $\alpha$ is a string of terminals and non-terminals in the grammar. Such a grammar is not context dependent -- the non-terminal symbol $E$ can always be replaced by $\alpha$, regardless of the situation.\\
+
+\textbf{Backus Naur Form} (BNF) is a notational method used to describe context-free grammars. It has the basic form
+$E := \alpha \mid \beta \ldots$ \cite{BNF}. Here, the non-terminal $E$ could be replaced either by the strings $\alpha$ or $\beta$. Thus, the BNF specification for a language $\{a\}^{*}$ is
+
+\begin{Verbatim}[frame=single]
+
+E  :=  E a
+       | a
+
+\end{Verbatim}
+
+\verb|Bison| specifications are rooted in Backus Naur Form.
+
+
+
+
+
+\chapter{Examples}
+
+\section{Calculator}
+\label{appendix:calculator}
+Presented below are Flex and Bison files that represent a calculator.  These specifications were inspired by an \verb|iBison| example \cite{iBison}. These files can be debugged with \verb|sidBison| are presented below.
+
+\subsection{Lexer file: calcparser.l}
+
+\begin{Verbatim}[frame=single]
+
+%{                                            
+# include "calcparser.tab.h"
+# undef yywrap
+# define yywrap() 1
+%}
+
+%option noyywrap
+
+int   [0-9]+
+blank [ \t]
+
+%%
+{blank}+
+[\n]+      
+\+	   return OPERATOR_PLUS;
+-	   return OPERATOR_MINUS;
+\*	   return OPERATOR_MULT;
+\/	   return OPERATOR_DIV;
+\(	   return LPAREN;
+\)	   return RPAREN;
+{int}      return NUMBER;
+.          {fprintf(stderr,"Invalid token!\n");}
+%%
+
+\end{Verbatim}
+
+\subsection{Grammar file: calcparser.y}
+
+\begin{Verbatim}[frame=single]
+
+%{
+/* A simple calculator */
+void yyerror(const char *s);
+%}
+%token        NUMBER
+%token 	      OPERATOR_PLUS
+%token	      OPERATOR_MINUS
+%token	      OPERATOR_MULT
+%token 	      OPERATOR_DIV
+%token	      LPAREN
+%token 	      RPAREN
+%left OPERATOR_PLUS OPERATOR_MINUS
+%left OPERATOR_MULT OPERATOR_DIV
+%%
+exp: exp OPERATOR_PLUS exp
+   | exp OPERATOR_MINUS exp
+   | exp OPERATOR_MULT exp 
+   | exp OPERATOR_DIV exp
+   | LPAREN exp RPAREN
+   | NUMBER
+;
+%%
+void
+yyerror(cosnt char *s)
+{
+  fprintf(stderr,"Syntax error: %s\n",s);
+}
+
+\end{Verbatim}
+
+
+\section{Programmable Computable Functions}
+
+PCF is a simple typed functional language proposed by Dana Scott in 1969.  Flex and Bison files that can be debugged with \verb|sidBison| are presented below.
+
+\subsection{Lexer file: pcf.l}
+
+\begin{Verbatim}[frame=single]
+%{
+# include "pcf.tab.h"
+# undef yywrap
+# define yywrap() 1
+
+%}
+
+%option noyywrap
+
+blank [ \t]
+word [a-zA-Z][a-zA-Z0-9]*
+
+
+%%
+{blank}+
+[\n]+
+0           return ZERO;
+:           return COLON;
+"true"      return TRUE;
+"false"     return FALSE;
+\.          return DOT;
+\(          return LPAREN;
+\)          return RPAREN;
+"fix"       return FIX;
+"zero"      return ZEROFUNC;
+"succ"      return SUCC;
+"pred"      return PRED;
+"if"        return IF;
+"then"      return THEN;
+"else"      return ELSE;
+"fn"        return FN;
+"nat"       return NAT;
+"bool"      return BOOL;
+"->"        return ARROW;
+{word}      return IDEN;
+.           {fprintf(stderr, "Invalid token!\n");}
+
+%%
+\end{Verbatim}
+
+\subsection{Parser file: pcf.y}
+
+\begin{Verbatim}[frame=single]
+%{
+
+/* A simple PCF grammar */
+
+%}
+
+%token ZERO
+%token TRUE
+%token FALSE
+%token IDEN
+%token FIX
+%token ZEROFUNC
+%token LPAREN
+%token RPAREN
+%token SUCC
+%token PRED
+%token IF
+%token THEN
+%token ELSE
+%token FN
+%token COLON
+%token DOT
+%token NAT
+%token ARROW
+%token BOOL
+
+%left ARROW
+
+%%
+
+
+m : ZERO
+  | TRUE
+  | FALSE
+  | var
+  | zerofunc
+  | succ
+  | pred
+  | ifelse
+  | fun
+  | app
+  | fix
+
+fix : FIX LPAREN m RPAREN
+
+app : LPAREN callfunc argfunc RPAREN
+
+callfunc : m
+argfunc : m
+
+
+tau : NAT
+    | BOOL
+    | funtau
+    | LPAREN funtau  RPAREN
+
+funtau : tau ARROW tau
+
+
+fun : FN var COLON tau DOT m
+
+succ : SUCC LPAREN m RPAREN
+
+pred : PRED LPAREN m RPAREN
+
+zerofunc : ZEROFUNC LPAREN m RPAREN
+
+var : IDEN
+
+ifelse : IF m THEN m ELSE m
+
+%%
+/*
+
+app : funcexp argexp
+
+succ : SUCC LPAREN m RPAREN
+pred : PRED LPAREN m RPAREN
+fix : FIX LPAREN m RPAREN
+
+funcexp : m
+argexp : m
+
+fix : LPAREN m RPAREN
+
+func : FN var COLON tau DOT m
+
+*/
+void yyerror (const char *s)
+{
+fprintf(stderr, "Syntax error: %s\n", s);
+}
+\end{Verbatim}
+
+\section{Lambda Calculus}
+\label{appendix:lambdacalc}
+The lambda calculus is a formal system that expresses computation by way of functions. Flex and Bison files that can be debugged with \verb|sidBison| are presented below.
+
+\subsection{Lexer file: lambdacalc.l}
+
+\begin{Verbatim}[frame=single]
+%{
+# include "lambdacalc.tab.h"
+# undef yywrap
+# define yywrap() 1
+
+%}
+
+%option noyywrap
+
+blank [ \t]
+word [a-zA-Z][a-zA-Z0-9]*
+int [0-9]+
+
+
+%%
+{blank}+
+[\n]+
+{int}       return CONSTANT;
+{word}      return IDENT;
+\.          return DOT;
+\\          return LAMBDA;
+\(          return LPAREN;
+\)          return RPAREN;
+.           {fprintf(stderr, "Invalid token!\n");}
+
+%%
+\end{Verbatim}
+
+\subsection{Grammar file: lambdacalc.y}
+
+\begin{Verbatim}[frame=single]
+
+%{
+/* Untyped lambda calculus */
+void yyerror(const char *s);
+
+%}
+
+%token  IDENT
+%token  CONSTANT
+%token  LPAREN
+%token  RPAREN
+%token  LAMBDA
+%token  DOT
+
+%%
+
+exp : var
+    | func
+    | app
+    | CONSTANT
+
+func : LAMBDA var DOT scope
+
+app : LPAREN funcexp argexp  RPAREN
+
+scope : exp
+
+funcexp : exp
+
+argexp : exp
+
+var : IDENT
+
+
+;
+
+%%
+void
+yyerror(const char *s)
+{
+    fprintf(stderr, "Syntax error: %s\n", s);
+}
+
+\end{Verbatim}
+
+\section{Impcore}
+
+Impcore is a simple imperative language used as a pedagogical tool in Comp 105: Programming Languages at Tufts University. A lexer and parser for impcore are presented below:
+
+\subsection{Lexer file: imp.l}
+
+\begin{Verbatim}[frame=single]
+%{
+#include "heading.h"
+# include "imp.tab.h"
+# undef yywrap
+# define yywrap() 1
+
+/* Need to include - in word */
+
+%}
+
+%option noyywrap
+
+blank [ \t]
+word [a-zA-Z][a-zA-Z0-9\-]*
+int [0-9]+
+
+
+%%
+{blank}+
+[\n]+
+\(              return LPAREN;
+\)              return RPAREN;
+\+              return PLUS;
+-               return MINUS;
+\*              return MUL;
+\/              return DIV;
+"="             return EQ;
+\<              return LT;
+\>              return GT;
+"val"           return VAL;
+"define"        return DEFINE;
+"use"           return USE;
+"check-expect"  return CHECKEXPECT;
+"set"           return SET;
+"if"            return IF;
+"while"         return WHILE;
+"begin"         return BEGN;
+"print"         return PRINT;
+"check-err"     return CHECKERR;
+{int}           {return NUMERAL;}
+{word}          {return NAME;}
+.               {fprintf(stderr, "Invalid token!\n");}
+
+%%
+
+\end{Verbatim}
+
+\subsection{Parser file: imp.y}
+\begin{Verbatim}[frame=single]
+%{
+/* Leaving unit-test out of def */
+#include "heading.h"
+#include <stdio.h>
+void yyerror(const char *s);
+int yylex(void);
+%}
+
+
+%token  VAL
+%token  DEFINE
+%token  LPAREN
+%token  RPAREN
+%token  USE
+%token  CHECKEXPECT
+%token  SET
+%token  IF
+%token  WHILE
+%token  BEGN
+%token  PLUS
+%token  MINUS
+%token  MUL
+%token  DIV
+%token  EQ
+%token  LT
+%token  GT
+%token  PRINT
+%token  CHECKERR
+%token  NUMERAL
+%token  NAME
+
+
+
+
+%%
+
+
+program : 
+        | def program
+
+def : LPAREN VAL variablename exp RPAREN                                         | exp     
+    | LPAREN DEFINE functionname formals exp RPAREN
+    | LPAREN USE filename RPAREN                     
+    | unittest  
+
+
+unittest : LPAREN CHECKEXPECT exp exp RPAREN     
+          | LPAREN CHECKERR exp RPAREN    
+
+exp : literal                             
+    | variablename                        
+    | LPAREN SET variablename exp RPAREN  
+    | LPAREN IF exp exp exp RPAREN          
+    | LPAREN WHILE exp exp RPAREN         
+    | LPAREN BEGN expstar                           
+    | LPAREN function expstar                       
+
+
+
+expstar : RPAREN                                    
+        | exp expstar                                
+                                                     
+
+formals : LPAREN variablenamestar                  
+
+variablenamestar : RPAREN                           
+                  | variablename variablenamestar 
+
+
+literal : NUMERAL           
+
+function : functionname           
+         | primitive              
+
+primitive : PLUS                  
+          | MINUS                                 
+          | MUL                    
+          | DIV                    
+          | EQ                     
+          | LT                     
+          | GT                     
+          | PRINT                  
+
+variablename : NAME 
+functionname : NAME 
+filename : NAME  
+
+
+;
+
+%%
+void
+yyerror(const char *s)
+{
+    fprintf(stderr, "Syntax error: %s\n", s);
+}
+
+\end{Verbatim}
+
+\section{JSON Grammar}
+
+\begin{Verbatim} [frame=single]
+    JSON-text : ws value ws
+
+	begin-array     : ws %x5B ws  ; [ left square bracket
+
+	begin-object    : ws %x7B ws  ; { left curly bracket
+
+	end-array       : ws %x5D ws  ; ] right square bracket
+
+	end-object      : ws %x7D ws  ; } right curly bracket
+
+	name-separator : ws %x3A ws  ; : colon
+
+	value-separator : ws %x2C ws  ; , comma
+
+
+	ws  :	               ; Empty string
+		   | %x20 |            ; Space
+		   %x09 |              ; Horizontal tab
+		   %x0A |              ; Line feed or New line
+		   %x0D                ; Carriage return
+
+	value : false | null | true | object
+			 | array | number | string
+
+	false : %x66.61.6c.73.65   ; false
+
+	null  : %x6e.75.6c.6c      ; null
+
+	true  : %x74.72.75.65      ; true
+
+	object : begin-object
+	      [ member ( value-separator member ) ]
+			end-object
+
+	member : string name-separator value
+
+	array : begin-array [ value *( value-separator value ) ]
+				 end-array
+
+	number : [ minus ] int [ frac ] [ exp ]
+
+	decimal-point : %x2E       ; .
+
+	digit1-9 : %x31-39         ; 1-9
+
+	e : %x65 | %x45            ; e E
+
+	exp : e [ minus | plus ] 1*DIGIT
+
+	frac : decimal-point 1*DIGIT
+
+	int : zero | ( digit1-9 *DIGIT )
+
+	minus : %x2D               ; -
+
+	plus : %x2B                ; +
+
+	zero : %x30                ; 0
+
+	string : quotation-mark *char quotation-mark
+
+	char : unescaped 
+		   | escape (
+		   %x22 |          ; "    quotation mark  U+0022
+		   %x5C |          ; \    reverse solidus U+005C
+		   %x2F |          ; |    solidus         U+002F
+		   %x62 |          ; b    backspace       U+0008
+		   %x66 |          ; f    form feed       U+000C
+		   %x6E |          ; n    line feed       U+000A
+		   %x72 |          ; r    carriage return U+000D
+		   %x74 |          ; t    tab             U+0009
+		   %x75 4HEXDIG )  ; uXXXX                U+XXXX
+
+	escape : %x5C              ; \
+
+	quotation-mark : %x22      ; "
+
+	unescaped : %x20-21 | %x23-5B | %x5D-10FFFF
+\end{Verbatim}
+
+
+\chapter{Empirical Data}
+
+\begin{center}
+\begin{longtable}{|l|l|l|}
+\caption[Raw DDEBUGLOG Data]{Raw DDEBUGLOG Data} \label{grid_mlmmh} \\
+
+\hline \multicolumn{1}{|c|}{\textbf{Command}} & \multicolumn{1}{c|}{\textbf{User Time (s)}} & \multicolumn{1}{c|}{\textbf{System Time (s)}} \\ \hline 
+\endfirsthead
+
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline \multicolumn{1}{|c|}{\textbf{Command}} &
+\multicolumn{1}{c|}{\textbf{User Time (s)}} &
+\multicolumn{1}{c|}{\textbf{System Time (s)}} \\ \hline 
+\endhead
+
+\hline \multicolumn{3}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
+
+\hline \hline
+\endlastfoot
+
+br                            & 5.00E-03      & 8.00E-03        \\
+br                            & 0.00E+00      & 0.00E+00        \\
+br                            & 0.00E+00      & 0.00E+00        \\
+br                            & 0.00E+00      & 0.00E+00        \\
+br                            & 9.99E-04      & 0.00E+00        \\
+crule                         & 8.00E-03      & 2.50E-02        \\
+crule                         & 1.40E-02      & 2.30E-02        \\
+crule                         & 6.00E-03      & 4.00E-02        \\
+crule                         & 8.00E-03      & 4.90E-02        \\
+crule                         & 8.00E-03      & 1.40E-02        \\
+crule                         & 1.70E-02      & 2.60E-02        \\
+crule                         & 1.30E-02      & 6.40E-02        \\
+crule                         & 1.80E-02      & 6.30E-02        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+ctkn                          & 0.00E+00      & 0.00E+00        \\
+rulepos                       & 6.00E-03      & 3.20E-02        \\
+rulepos                       & 2.00E-03      & 9.00E-03        \\
+rulepos                       & 1.00E-02      & 2.90E-02        \\
+rulepos                       & 1.30E-02      & 2.90E-02        \\
+rulepos                       & 6.00E-03      & 4.70E-02        \\
+rulepos                       & 5.00E-03      & 1.80E-02        \\
+rulepos                       & 1.10E-02      & 3.10E-02        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 5.00E-03        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 1.00E-03      & 0.00E+00        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 6.00E-03        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 9.99E-04      & 7.00E-03        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 4.00E-03        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 9.99E-04        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 2.00E-03        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 0.00E+00      & 1.00E-03        \\
+step                          & 1.00E-03      & 0.00E+00        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+step                          & 0.00E+00      & 0.00E+00        \\
+steprule                      & 1.00E-03      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 3.00E-03        \\
+steprule                      & 0.00E+00      & 3.00E-03        \\
+steprule                      & 0.00E+00      & 1.00E-03        \\
+steprule                      & 1.00E-03      & 4.00E-03        \\
+steprule                      & 0.00E+00      & 3.00E-03        \\
+steprule                      & 1.00E-03      & 3.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 9.99E-04      & 1.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 1.00E-03      & 1.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 1.00E-03      & 2.00E-03        \\
+steprule                      & 1.00E-03      & 9.99E-04        \\
+steprule                      & 0.00E+00      & 4.00E-03        \\
+steprule                      & 1.00E-03      & 3.00E-03        \\
+steprule                      & 0.00E+00      & 4.00E-03        \\
+steprule                      & 0.00E+00      & 3.00E-03        \\
+steprule                      & 1.00E-03      & 1.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 3.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 1.00E-03      & 1.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 1.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 5.00E-03        \\
+steprule                      & 2.00E-03      & 3.00E-03        \\
+steprule                      & 0.00E+00      & 2.00E-03        \\
+steprule                      & 0.00E+00      & 3.00E-03        \\
+stprule                       & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 9.99E-04        \\
+str                           & 0.00E+00      & 1.00E-03        \\
+str                           & 1.00E-03      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 9.99E-04        \\
+str                           & 1.00E-03      & 0.00E+00        \\
+str                           & 0.00E+00      & 1.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 1.00E-03      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 1.00E-03        \\
+str                           & 0.00E+00      & 5.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 1.00E-03      & 0.00E+00        \\
+str                           & 0.00E+00      & 1.00E-03        \\
+str                           & 0.00E+00      & 7.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 9.99E-04        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 4.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 1.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 5.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 1.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00        \\
+str                           & 0.00E+00      & 8.00E-03        \\
+str                           & 0.00E+00      & 0.00E+00  		\\  
+\end{longtable}
+\end{center}
+
+\end{appendices}

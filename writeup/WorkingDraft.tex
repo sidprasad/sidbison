@@ -1,0 +1,76 @@
+\documentclass {report}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage{appendix}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true, % make the links colored
+    linkcolor=black, % color TOC links in black
+    urlcolor=red, % color URLs in red
+    linktoc=all % 'all' will create links for everything in the TOC
+}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{csquotes}
+\usepackage{fancyvrb}
+
+\usepackage[backend=bibtex,style=numeric]{biblatex}
+%\bibliography{sources} 
+\addbibresource{sources.bib}
+
+\title {
+	{sidBison: A Stepwise Interactive Debugger for Bison\\[0.4in]}
+	{ Tufts University\\[0.2in]}
+	{\large Advisor: Prof. Kathleen Fisher\\}
+}
+
+\author {Siddhartha Prasad}
+\date{23rd March 2016}
+
+\begin {document}
+
+\maketitle
+
+\input{Abstract.tex}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\thispagestyle{plain}
+\begin{center}
+    \textbf{A Quick Note}
+\end{center}
+
+\noindent
+
+This thesis is aimed at audiences who have previously encountered formal grammars and/or concrete syntax trees.
+Appendix A contains a quick introduction to formal and context-free grammars.\\
+
+Familiarity with parser-generators like \verb|Yacc| or \verb|Bison| is not required, but will allow for deeper understanding of the problem. I recommend reading the Bison user manual at \verb|http://www.gnu.org/software/bison/manual/|.
+
+\pagebreak
+
+\input{Motivation.tex}
+
+\input{Goals.tex}
+
+\input{TechnicalApproach.tex}
+
+\input{Complexity.tex}
+
+\input{Evaluation.tex}
+
+\input{UserManual.tex}
+
+\input{AdditionalWork.tex}
+
+\input{app.tex}
+
+\printbibliography
+
+\end{document}
+
+
+

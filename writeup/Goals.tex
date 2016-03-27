@@ -1,0 +1,43 @@
+\chapter{Stepwise Interactive Debugger for Bison}
+
+
+\verb|iBison| is a version of \verb|Bison 2.3| that was built by S.K. Popuri at the University of Illinois at Chicago. It generates 
+an interactive interface that allows a user to step through the parsing process, presenting information in terms of a push-down automaton and its state and token stacks \cite{iBison}. Stepwise Interactive Debugger for Bison (sidBison), leverages this responsive design to allow for debugging at the grammar level. The system is modelled on \verb|gdb|-style debuggers, allowing for not only the identification of errors in \verb|Bison| specifications but also those in input strings, maintaining an abstraction barrier between grammars and parser-generated state tables.\\
+
+The goal of this project is to simplify the parser-generation process for programmers who are not well-versed with the underlying implementation. Debuggers preserving such abstraction barriers could be particularly useful in the process of democratizing language design workbenches.
+
+\section{Using sidBison}
+
+The \verb|sidBison| system requires a \verb|Bison| specification and lexer shared object in order to debug a string. A more detailed setup process as well as examples are described in Appendix B.
+
+\section{Commands}
+
+The \verb|sidBison| command set is designed to reinforce the abstraction barrier between a Bison specification and the underlying parser implementation.
+
+\begin{enumerate}
+\item \textbf{crule}: Returns the current non-terminal rule being parsed in the Bison specification.
+\item \textbf{steprule} : Steps to the next rule in the Bison specification
+\item \textbf{str}: Identifies the current position in the entire parsing process.
+\item \textbf{br} : Allows the user to break when a particular token is encountered.
+\item \textbf{step} : Steps to the next action taken by the parser
+\item \textbf{ctkn} : Displays the current token being looked at by the parser.
+\item \textbf{rulepos} : Identifies current position in the rule being parsed.
+\item \textbf{test $<$filename$>$} : Accepts the input string as a file.
+\item \textbf{quit} : Ends the sidBison program
+\end{enumerate}
+
+The implementation of these commands is described in the Chapter 3: \textit{Implementing sidBison Commands}.
+
+\section{Usability}
+
+\verb|sidBison|'s success hinges on its usability. It should be able to aid a user with the examples presented earlier. This is predicated on the idea that:
+
+\begin{enumerate}
+\item Humans generally find EBNF easier to understand than push-down automata.
+\item The ability to step through grammar specifications presents bottom-up parsing in an understandable, linear manner.
+\end{enumerate}
+
+These criteria are evaluated in the case study presented in Chapter 5: \textit{Case Study: Usability}.
+
+
+

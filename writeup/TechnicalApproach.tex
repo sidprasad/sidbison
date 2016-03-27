@@ -1,0 +1,70 @@
+\chapter{Implementing sidBison Commands}
+
+\verb|sidBison| is designed to be a step-through debugger at the grammar level, and is built on top of \verb|iBison|'s interactive debugging mechanism. The mathematical underpinnings of the system involve mapping \verb|Bison| and \verb|iBison| constructs like 
+\begin{enumerate}
+\item Push-Down Automata
+\item State Stacks
+\item Token Stacks
+\item Lookaheads
+\end{enumerate}
+\noindent
+to Extended Backaus Naur Form (EBNF) grammar rules. As a result, each command takes the form of a mathematical function in terms of these variables. Thus, \verb|sidBison| commands can be thought of as a set $\{ f_i \}$ of functions.
+
+\paragraph{step}
+
+The \verb|step| command allows the user to step forward to the next action taken by the underlying parser debugger. It is the simplest command for the \verb|sidBison| system. The rule is of the form $f_1(ss, ts, ct) \rightarrow (ss', ts', tc')$, where:
+
+\begin{enumerate}
+\item $ss$ and $ss'$ are state stacks, where $ss'$ is a new state stack created by taking a step.
+\item $ts$ and $ts'$ are token stacks, where $ts$ is a new token stack created by taking a step.
+\item $ct$  and $ct'$ are current tokens, where $ct'$ is a new current token obtained either by a new lookahead or from $ss'$.
+\end{enumerate}
+
+\verb|step| provides the basis of mapping actions in terms of the underlying parser to those involving \verb|Bison| specifications. It maps a new \textit{lookahead} to encountering a new token, a shift to adding the token to the string, and a reduce to parsing a string. Several of the more complicated \verb|sidBison| commands leverage \verb|step|.
+
+\paragraph{steprule}
+
+The \verb|steprule| command takes the user to the next rule encountered by the parser. Thus, it presents a step-wise debugging abstraction in terms of the user-provided grammar specification instead of parser-generator options. 
+
+The command is implemented by stepping through \verb|iBison| state changes till a reduce action is executed. As a result
+it has the mathematical form $f_2: \verb|Parser Automaton| \rightarrow (ss`, ts`)$, where :
+
+\begin{enumerate}
+\item $ss'$ represents a new state stack, and by extension a new current state.
+\item $ts'$ represents a new token stack.
+\end{enumerate}
+
+\paragraph{crule}
+
+The \verb|crule| command returns the current rule being parsed by Bison generated parser. It takes the form of a mathematical function \\ $f_3: (\mbox{Parser Automaton},  $cs$  , $ss$) \rightarrow (\mbox{Backus Naur Form Rule})$, where $cs$ is the current state, and $ss$ is the state stack.\\
+
+In general, a bottom-up parser cannot predict the non-terminal to which a partially known sequence of tokens will be reduced. Even judging if a reduction will ever take place is an undecidable problem. As a result, the command cannot be implemented using a single instance of a single-pass parser like \verb|Bison|. \verb|crule| therefore utilizes a time-travelling heuristic.
+
+This approach is concurrent in nature. A secondary \verb|iBison| process is spawned and is placed in the same state as the primary one. This secondary debugger is then stepped forward to the first parser \textit{reduce} action where the state stack has either shrunk, or has the same size with a different top element. The reduced rule is precisely the production being parsed.
+
+\paragraph{rulepos}
+
+\verb|rulepos| enumerates current positions the parser may be in within grammar rules. It is implemented by examining the rules
+and positions associated with the current rule in the underlying automaton. It has the mathematical form $f_4: cs \rightarrow [(\mbox{Backus Naur Form Rule},  p)]$, where $cs$ represents the current state and $p$ represents a position in the rule.
+
+\paragraph{str}
+
+The \verb|str| command returns the current position in the overall parsing process. It is implemented by displaying the contents of the \verb|iBison| token stack. It has mathematical form $f_5: cs \rightarrow str_{ss}$, where $cs$ represents the current state and $str_{ss}$ is a string representation of the state stack.
+
+\paragraph{ctkn}
+
+The \verb|ctkn| command displays the token with which the parser is currently dealing. It is implemented by presenting the newer of the look-ahead token and the top element of the token stack.
+
+
+\paragraph{br}
+
+The \verb|br| command allows the user to break when a particular token is encountered. This functionality is provided by stepping till the \verb|ctkn| equals the token provided. Thus it has mathematical form $f_6 : tkn \rightarrow (cs', ss')$, where:
+
+\begin{enumerate}
+\item $ss'$ represents a new state stack, and by extension a new current state.
+\item $ts'$ represents a new token stack.
+\item $tkn$ represents the input token.
+\end{enumerate}
+
+
+The \textbf{quit} and \textbf{test} commands are not involved in the actual debugging process, and so are not explained above.

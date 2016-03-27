@@ -1,0 +1,56 @@
+\chapter{Using sidBison}
+
+This section presents a small example of using \verb|sidBison|. Given a \verb|Flex| file \verb|lexer.l|, and a \verb|Bison| file \verb|parser.y|, a lexer shared object  \verb|lex.so| can be prepared for input to \verb|sidBison| as follows:
+
+\begin{Verbatim} [frame=single]
+
+ibison -d parser.y
+flex lexer.l   
+gcc -c -fPIC lex.yy.c
+gcc -shared -o lex.so lex.yy.o
+
+\end{Verbatim}
+
+This requires the \verb|LD_LIBRARY_PATH| environment variable to include the directory in which \verb|lexer.so| is available and the \verb|BISON_PKGDATADIR| variable points to the \verb|ibison\data| directory. \verb|sidBison| can now be run with \verb|parser.y| and \verb|lex.so| as command-line arguments.
+
+\section{Lambda Calculus}
+
+The lambda calculus example described in Appendix B involves files \href{https://github.com/sidprasad/sidbison/blob/master/lambdacalcexample/lambdacalc.l}{lambdacalc.l} and \href{https://github.com/sidprasad/sidbison/blob/master/lambdacalcexample/lambdacalc.y}{lambdacalc.y}.
+
+\paragraph{Compilation} These files can be compiled to create a lexer shared object file for input for \verb|sidBison| as described below..
+
+\begin{Verbatim} [frame=single]
+
+ibison -d lambdacalc.y
+flex lambdacalc.l   
+gcc -c -fPIC lex.yy.c
+gcc -shared -o lex.so lex.yy.o
+
+\end{Verbatim}
+
+After compilation, the generated files can be loaded into \verb|sidBison| as command line arguments.
+
+\begin{Verbatim} [frame=single]
+
+./sidbison lambdacalc.y lex.so
+
+\end{Verbatim}
+
+\subsection{Debugging input}
+
+The file \href{https://github.com/sidprasad/sidbison/blob/master/lambdacalcexample/input/ycombinator.err} {ycombinator.err} contains the string \verb|\h.(\h.(\x.(h (x x))) \x.(h (x x)))|. This is not accepted by the specified lambda calculus grammar. An example step-through debug is described below.\\
+
+
+\textbf{Want screenshots and step through process}
+
+\section{Impcore}
+
+\section{Source Code}
+
+Source code for \verb|sidBison| be found at \url{https://github.com/sidprasad/sidbison/}. 
+
+\noindent
+Example Flex and Bison specifications can be found in Appendix B.
+
+\noindent
+ Source code and instructions for building and installing iBison can be found at \url{https://www.cs.uic.edu/~spopuri/ibison.html}.

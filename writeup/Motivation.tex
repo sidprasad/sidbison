@@ -1,0 +1,115 @@
+\chapter{Introduction}
+
+\section{Machine generated parsers}
+
+A parser is a machine that examines a string of characters and acts in response to those characters according to the rules of a formal grammar. In computing, parsers have widespread applications, ranging from Natural Language Processing to compiler generation. Programmers often use these systems to translate information into formats about which they can reason more easily.\\
+
+Early parsers were common well before a theory of formal grammars was developed, and were painstakingly written into punchcards. With Backus and Naur's formalization of \emph{Extended Backus Naur Form} (EBNF) notation for describing languages, programs were soon contracted for this tedious job. Recursive-descent parser generating machines soon became the standard, allowing programmers to put in grammars and get out entire parsers \cite{Bidwell}. While these top-down methods were easily understandable and debuggable, the generated machines could not deal with several everyday scenarios, including left-recursion. This led to the generation of \textbf{Bottom Up} parsing methods and their generators. These systems could process most common grammars, and preserved the EBNF abstraction afforded earlier to programmers. However, in doing so, these programs became very complex, involving several tables, automata and stacks. Programmers soon could not easily explain the underlying mechanisms of these systems.
+
+Modern parser-generators produce lots of hard-to-understand code. If the resulting parser does not semantically match the programmer's intent, debugging the system is a non-trivial task. Examining errors in specifications requires knowledge of the underlying code-generating implementation. This thesis introduces a tool that attempts to make the parser-generation process more accessible to the average programmer by offering the ability to step-through and debug grammar specifications.
+
+
+\section{Bison}
+
+Bison is a very popular bottom-up (LALR) parser generator that was built for the GNU project as an alternative to Yacc. According to the GNU website:
+
+\begin{displayquote}
+Bison is a general-purpose parser generator that converts an annotated context-free grammar into a deterministic LR or generalized LR (GLR) parser employing LALR(1) parser tables. As an experimental feature, Bison can also generate IELR(1) or canonical LR(1) parser tables. Once you are proficient with Bison, you can use it to develop a wide range of language parsers, from those used in simple desk calculators to complex programming languages.\textit{- GNU Bison} \citation{GNU}
+\end{displayquote}
+
+\subsection{Basic Actions}
+
+The \verb|Bison| parser-generator employs a \textit{bottom-up} parsing mechanism \cite{UnderstandingBison}. The program uses an input specification to generate a push-down automaton as well as a token stack. It executes transitions between states on based on the tokens encountered. \verb|Bison| has three basic actions \cite{Appel} \cite{BisonAlgorithm}:
+
+\begin{enumerate}
+
+\item \textbf{shift}: As Bison encounters input tokens, it pushes them onto the token stack.
+\item \textbf{reduce}: When the last $k$ shifted tokens match a rule, they are merged to form the non-terminal specified in the left hand side of the rule. This symbol is now stored on the token stack. The push-down automata then pops back to a previous state.
+\item \textbf{lookahead}: \verb|Bison| often \emph{looks ahead} at the next coming token before performing a shift or reduce action, in order to better ascertain what to do.
+\end{enumerate}
+
+\verb|Bison| attempts to use shifts and reductions (with the aid of lookaheads) to match input to a specified \textit{start} symbol in the specification \cite{BisonAlgorithm}.
+
+\subsection{Lookaheads}
+While the need for a lookahead may not be apparent, the following example shows its effectiveness.
+
+\begin{Verbatim}[frame=single]
+	Digit : 1 | 2 | 3
+
+	Number : Digit 
+                 | Digit Number
+\end{Verbatim}
+
+On input \verb|12| the parser requires the look-ahead to know that after the digit $1$ has been shifted, it should not immediately be reduced to the rule \verb|Number|.
+
+
+\subsection{Limitations}
+
+While Bison is able to produce parsers for a wide range of grammars, its underlying LALR(1) parser table implementation
+is limited to certain forms. Certain specifications can cause shift-reduce and reduce-reduce conflicts, where there is ambiguity in
+what action should be executed \cite{LRWiki}.
+
+\subsubsection{Shift-Reduce Conflicts}
+
+\begin{Verbatim} [frame=single]
+    E -> a E
+          | a
+\end{Verbatim}
+
+In the grammar above, we see that when parsing terminal \verb|a|, there could be a reduce action to \verb|E|
+and a shift action in order to parse the rule \verb|a E|. In such a situation, an LR parser would not be able to decide on a \lq correct\rq option. \verb|BISON| shifts in such a situation, which may not echo the programmers intent \cite{BisonAlgorithm}.
+
+\subsubsection{Reduce-Reduce conflicts}
+
+
+\begin{Verbatim} [frame=single]
+    X -> Y a | Z b
+    Y -> a
+    Z -> a
+\end{Verbatim}
+
+In the grammar above, we see that the terminal \verb|a| could be reduced to \verb|Y| or \verb|Z|. Bottom-up parsers like \verb|BISON| do not have a resolution strategy in such a situation \cite{DonnellyandStallman}.
+
+
+\section{Programmer Errors}
+
+Real-world Bison specifications are often very large. Much like any other language, larger specifications create greater room for programmer error. As a result, while generated parsers may accept input, they often do not behave in a way intended by programmers. Debugging these machine-generated parsers is a non-trivial task. While Bison provides error messaging in terms of the underlying parser implementation, it is not easy to examine the semantics of a specification. A user needs to be familiar not only with the specified grammar, but also LR parsing to correct errors in their code.
+
+The following are \verb|Bison| specifications that do not accept the exact set of strings a programmer might expect.
+
+\subsection{Small Specifications: Calculator Language}
+
+This section looks at a grammar specification for a simple calculator language \cite{DonnellyandStallman} that accepts integers and performs addition, subtraction, multiplication and division. While this grammar may seem to specify the calculator language at first, it cannot parse any string with more than one operator. For instance, the string \verb|1 + 1 + 1| is not accepted.
+
+\begin{Verbatim} [frame=single]
+
+	Digit : 1 
+            | 2
+            | 3
+            | 4
+            | 5
+            | 6
+            | 7
+            | 8
+            | 9
+            | 0
+
+	Number : Digit 
+                 | Digit Number
+	
+	Operator : + 
+                  | -
+                  | *
+                  | /
+	
+	Expression : Number
+                   | Number Operator Number
+
+\end{Verbatim}
+
+\subsection{Large Specifications: JSON}
+
+Larger grammars, by virtue of their size, are hard to debug. The specification in \textbf{Appendix 6.3} is intended to describe JSON strings \cite{BrayTim}. Upon closer inspection, one might notice that the grammar can parse only 2 members with value separators. 
+Identifying which rule causes the error requires traversing almost the the whole grammar. A step-though debugging approach can be hard to execute manually.\\
+
+As a result of the complexity of these systems, parser generators like Bison are quickly losing ground to other parsing approaches. An influential paper by Matthew Might and David Darais claims that Yacc is dead \cite{Yaccisdead}. Increasing the accessibility of these systems could help bottom up parser generators re-emerge as a staple of the average language designer's workbench.  
