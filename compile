@@ -1,4 +1,5 @@
 echo Remember to export LD_LIBRARY_PATH=\".\"
+echo Remember to export IBISON_PATH=\"ibison\"
 echo Debug with -DDEBUGLOG=1
 gcc -g sidbison.h sidbison.c -o sidbison -DDEBUGLOG=0
 

@@ -1,0 +1,42 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Machine generated parsers}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Bison}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.2.1}{Basic Actions}{section.1.2}% 4
+\BOOKMARK [2][-]{subsection.1.2.2}{Lookaheads}{section.1.2}% 5
+\BOOKMARK [2][-]{subsection.1.2.3}{Limitations}{section.1.2}% 6
+\BOOKMARK [1][-]{section.1.3}{Programmer Errors}{chapter.1}% 7
+\BOOKMARK [2][-]{subsection.1.3.1}{Small Specifications: Calculator Language}{section.1.3}% 8
+\BOOKMARK [2][-]{subsection.1.3.2}{Large Specifications: JSON}{section.1.3}% 9
+\BOOKMARK [0][-]{chapter.2}{Stepwise Interactive Debugger for Bison}{}% 10
+\BOOKMARK [1][-]{section.2.1}{Using sidBison}{chapter.2}% 11
+\BOOKMARK [1][-]{section.2.2}{Commands}{chapter.2}% 12
+\BOOKMARK [1][-]{section.2.3}{Usability}{chapter.2}% 13
+\BOOKMARK [0][-]{chapter.3}{Implementing sidBison Commands}{}% 14
+\BOOKMARK [0][-]{chapter.4}{Interactivity}{}% 15
+\BOOKMARK [1][-]{section.4.1}{Complexity}{chapter.4}% 16
+\BOOKMARK [1][-]{section.4.2}{Empirical analysis}{chapter.4}% 17
+\BOOKMARK [1][-]{section.4.3}{Conclusion}{chapter.4}% 18
+\BOOKMARK [0][-]{chapter.5}{Case Study : Usability}{}% 19
+\BOOKMARK [0][-]{chapter.6}{Using sidBison}{}% 20
+\BOOKMARK [1][-]{section.6.1}{Lambda Calculus}{chapter.6}% 21
+\BOOKMARK [2][-]{subsection.6.1.1}{Debugging input}{section.6.1}% 22
+\BOOKMARK [1][-]{section.6.2}{Impcore}{chapter.6}% 23
+\BOOKMARK [1][-]{section.6.3}{Source Code}{chapter.6}% 24
+\BOOKMARK [0][-]{chapter.7}{Additional Work}{}% 25
+\BOOKMARK [0][-]{Appendix.a.A}{A Quick Overview of Formal Grammars}{}% 26
+\BOOKMARK [1][-]{section.a.A.1}{Context Free Grammars}{Appendix.a.A}% 27
+\BOOKMARK [0][-]{Appendix.a.B}{Examples}{}% 28
+\BOOKMARK [1][-]{section.a.B.1}{Calculator}{Appendix.a.B}% 29
+\BOOKMARK [2][-]{subsection.a.B.1.1}{Lexer file: calcparser.l}{section.a.B.1}% 30
+\BOOKMARK [2][-]{subsection.a.B.1.2}{Grammar file: calcparser.y}{section.a.B.1}% 31
+\BOOKMARK [1][-]{section.a.B.2}{Programmable Computable Functions}{Appendix.a.B}% 32
+\BOOKMARK [2][-]{subsection.a.B.2.1}{Lexer file: pcf.l}{section.a.B.2}% 33
+\BOOKMARK [2][-]{subsection.a.B.2.2}{Parser file: pcf.y}{section.a.B.2}% 34
+\BOOKMARK [1][-]{section.a.B.3}{Lambda Calculus}{Appendix.a.B}% 35
+\BOOKMARK [2][-]{subsection.a.B.3.1}{Lexer file: lambdacalc.l}{section.a.B.3}% 36
+\BOOKMARK [2][-]{subsection.a.B.3.2}{Grammar file: lambdacalc.y}{section.a.B.3}% 37
+\BOOKMARK [1][-]{section.a.B.4}{Impcore}{Appendix.a.B}% 38
+\BOOKMARK [2][-]{subsection.a.B.4.1}{Lexer file: imp.l}{section.a.B.4}% 39
+\BOOKMARK [2][-]{subsection.a.B.4.2}{Parser file: imp.y}{section.a.B.4}% 40
+\BOOKMARK [1][-]{section.a.B.5}{JSON Grammar}{Appendix.a.B}% 41
+\BOOKMARK [0][-]{Appendix.a.C}{Empirical Data}{}% 42

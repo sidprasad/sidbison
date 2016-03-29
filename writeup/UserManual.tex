@@ -41,7 +41,48 @@ After compilation, the generated files can be loaded into \verb|sidBison| as com
 The file \href{https://github.com/sidprasad/sidbison/blob/master/lambdacalcexample/input/ycombinator.err} {ycombinator.err} contains the string \verb|\h.(\h.(\x.(h (x x))) \x.(h (x x)))|. This is not accepted by the specified lambda calculus grammar. An example step-through debug is described below.\\
 
 
-\textbf{Want screenshots and step through process}
+
+\begin{figure}[H] \centering
+\includegraphics[width=10cm]{lc_1.png}
+\end{figure}
+
+\noindent
+
+\verb|ycombinator.err| was loaded into \verb|sidBison| using the \verb|test| command.
+
+\begin{figure}[H] \centering
+\includegraphics[width=10cm]{lc_2.png}
+\end{figure}
+
+\noindent
+
+The \verb|step| command executes a single parser step. The first \verb|step| executes the action of \textit{looking ahead} to the
+\verb|\| character. The \verb|steprule| command is then used to step to the next rule being parsed. The \verb|str| command shows that this rule was named \verb|var|. The current rule being parsed could not be identified since the entire string was not accepted. \verb|iBison| is trying to parse the entire subsequent string, alongside the current results of \verb|str| to a top level rule. However, the string does not match any rules in the grammar.
+
+\begin{figure}[H] \centering
+\includegraphics[width=10cm]{lc_3.png}
+\end{figure}
+
+\noindent
+
+After stepping two more rules, the \verb|rulepos| rule uses a \verb|.| to show the current  position in the parsing process, as well as the current rule.
+
+\begin{figure}[H] \centering
+\includegraphics[width=10cm]{lc_4.png}
+\end{figure}
+
+\noindent
+The \verb|break| command can be used to step forward till the current token being looked at is a \verb|)|. The \verb|str| command shows the current state in the parsing process.
+
+\begin{figure}[H] \centering
+\includegraphics[width=10cm]{lc_5.png}
+\end{figure}
+
+\noindent
+
+The parsing process reaches lower level rules. \verb||rulepos| and \verb|crule| show the current rules being parsed. The only rule that starts and ends with parentheses is observed to be \verb|app|. Thus, \verb|iBison| attempts to parse \verb|(\x.(h (x x)))| as a function application with no argument. As a result, \href{https://github.com/sidprasad/sidbison/blob/master/lambdacalcexample/input/ycombinator.err} {ycombinator.err} is not accepted.
+
+
 
 \section{Impcore}
 

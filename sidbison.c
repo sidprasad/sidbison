@@ -6,6 +6,7 @@
 #include "sidbison.h"
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <stdlib.h>
 #ifndef DEBUGLOG
 #   define DEBUGLOG 0
 #endif
@@ -32,7 +33,7 @@ char *bspec;            /* Path to bison spec*/
 char *lexobj;           /* Path to lexer object */
 
 char *flags = "-i";     /* Flags sent to iBison*/
-char *bison = "ibison"; /* Path to iBison */
+char *bison = NULL; /* Path to iBison */
 int in_crule;           /* 1 if the crule command is being executed */
 int num_next;           /* Holds the number of steps taken in iBison */
 short eof;              /* Holds 1 if eof OR end token are encountered */
@@ -495,6 +496,12 @@ int main(int argc, char *argv[])
 
     system("mkdir tmp");
 
+    bison = getenv("IBISON_PATH");
+
+    if(bison) {
+
+        printf("iBison path was %s\n", bison);
+    }
 
     pipe(fd_);
     in_crule = 0;
