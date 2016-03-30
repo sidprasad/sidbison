@@ -1,0 +1,7 @@
+(define relprime? (m n)
+(if (= (gcd m n) 1) 1 0))
+
+(define gcd (m n)
+        (if (= n 0)
+        m
+        (gcd n (mod m n))))

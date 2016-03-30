@@ -1,0 +1,9 @@
+(define count_primes (n ctr m) 
+(if (= ctr n) (- m 1)
+        (if (= (prime? m) 1) 
+                (count_primes n (+ ctr 1) (+ m 1 ))
+                (count_primes n ctr (+ m 1))
+        )
+)
+)
+
