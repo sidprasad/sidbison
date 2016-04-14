@@ -1,0 +1,34 @@
+mkdir: cannot create directory `tmp': File exists
+test calcexample/input/calcinput: User:0.000000e+00 System4.999000e-03
+step: User:0.000000e+00 System0.000000e+00
+step: User:0.000000e+00 System0.000000e+00
+crule: User:0.000000e+00 System0.000000e+00
+step: User:0.000000e+00 System0.000000e+00
+crule: User:0.000000e+00 System0.000000e+00
+str: User:0.000000e+00 System4.000000e-03
+rulepos: User:0.000000e+00 System6.999000e-03
+step: User:0.000000e+00 System0.000000e+00
+crule: User:0.000000e+00 System2.999000e-03
+steprule: User:0.000000e+00 System1.000000e-03
+crule: User:4.999000e-03 System1.000000e-03
+ctkn: User:0.000000e+00 System0.000000e+00
+ctkn: User:0.000000e+00 System0.000000e+00
+br: User:0.000000e+00 System1.000000e-03
+step: User:0.000000e+00 System0.000000e+00
+br: User:2.000000e-03 System5.000000e-03
+str: User:0.000000e+00 System0.000000e+00
+rulepos: User:3.000000e-03 System6.999000e-03
+crule: User:3.999000e-03 System6.000000e-03
+str: User:1.000000e-03 System0.000000e+00
+ctkn: User:0.000000e+00 System0.000000e+00
+step: User:0.000000e+00 System0.000000e+00
+str: User:0.000000e+00 System0.000000e+00
+step: User:0.000000e+00 System0.000000e+00
+crule: User:2.000000e-03 System7.999000e-03
+step: User:0.000000e+00 System0.000000e+00
+rulepos: User:9.990000e-04 System9.998000e-03
+step: User:0.000000e+00 System0.000000e+00
+str: User:0.000000e+00 System0.000000e+00
+step: User:0.000000e+00 System1.000000e-03
+ctkn: User:0.000000e+00 System0.000000e+00
+str: User:0.000000e+00 System0.000000e+00
