@@ -498,9 +498,8 @@ int main(int argc, char *argv[])
 
     bison = getenv("IBISON_PATH");
 
-    if(bison) {
-
-        printf("iBison path was %s\n", bison);
+    if(!bison) {
+        error("Bison path incorrect\n");
     }
 
     pipe(fd_);
