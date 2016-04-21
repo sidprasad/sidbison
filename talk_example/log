@@ -1,0 +1,49 @@
+Stepwise Interactive Debugger Bison 1.0
+Please report bugs to Siddhartha.Prasad@tufts.edu
+(sidbison)(ibison) test input
+
+(ibison) 
+
+(ibison) Opening file...ready to test.
+
+(ibison) 
+
+(ibison) (interactive) 
+
+(sidbison)A new token was encountered: 12
+(sidbison)The current token was added to the parsed string
+(sidbison)crule: exp: NUMBER
+(sidbison)Possible rule positions are:
+    6 exp: NUMBER .
+
+
+(interactive) Where crule: exp: NUMBER
+(sidbison)Stepped to next rule
+(sidbison)str: exp 
+
+(sidbison)ctkn:12
+(sidbison)A new token was encountered: +
+(sidbison)The current token was added to the parsed string
+(sidbison)A new token was encountered: (
+(sidbison)str: exp + 
+
+(sidbison)Token: br: Broken at (
+(sidbison)Possible rule positions are:
+    1 exp: exp OPERATOR_PLUS . exp
+
+
+(interactive) Where crule: Could not indentify crule as string was not accepted
+(sidbison)The current token was added to the parsed string
+(sidbison)str: exp + ( 
+
+(sidbison)A new token was encountered: 13
+(sidbison)The current token was added to the parsed string
+(sidbison)Possible rule positions are:
+    5 exp: LPAREN NUMBER . RPAREN
+
+
+(interactive) Where crule: Could not indentify crule as string was not accepted
+(sidbison)A new token was encountered: -
+(sidbison)ctkn:-
+(sidbison)Parser error! String not accepted
+Quitting

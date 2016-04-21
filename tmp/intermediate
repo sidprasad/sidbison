@@ -1,17 +1,6 @@
-test calcexample/input/calcinput
+test talk_example/input 
+Load a lexer first. Otherwise supply tokens manually.
 
-Opening file...ready to test.
-
-(interactive) next
-
-Reading a token...next token is: ( (LPAREN)
-
-(interactive) next
-
-Token is shifted. Entering state 2
-
-Stacks:(states, tokens)
-0 2 
-( 
 
 (interactive) 
+/h/sprasa02/Desktop/Comp197/sidbison/ibison: cannot open file `/usr/local/share/bison/m4sugar/m4sugar.m4': No such file or directory
