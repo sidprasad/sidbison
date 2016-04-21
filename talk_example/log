@@ -10,40 +10,90 @@ Please report bugs to Siddhartha.Prasad@tufts.edu
 
 (ibison) (interactive) 
 
+
+(sidbison) step
 (sidbison)A new token was encountered: 12
+
+(sidbison) step
 (sidbison)The current token was added to the parsed string
+
+
+(sidbison) crule
 (sidbison)crule: exp: NUMBER
+
+
+(sidbison) rulepos
 (sidbison)Possible rule positions are:
     6 exp: NUMBER .
 
 
 (interactive) Where crule: exp: NUMBER
+
+
+(sidbison) steprule
 (sidbison)Stepped to next rule
+
+
+(sidbison) str
 (sidbison)str: exp 
 
+
+(sidbison) ctkn
 (sidbison)ctkn:12
+
+
+(sidbison) step
 (sidbison)A new token was encountered: +
+
+(sidbison) step
 (sidbison)The current token was added to the parsed string
+
+(sidbison) step
 (sidbison)A new token was encountered: (
+
+
+(sidbison) str
 (sidbison)str: exp + 
 
+
+(sidbison) br
+(sidbison) Token:(
 (sidbison)Token: br: Broken at (
+
+(sidbison) rulepos
 (sidbison)Possible rule positions are:
     1 exp: exp OPERATOR_PLUS . exp
 
 
 (interactive) Where crule: Could not indentify crule as string was not accepted
+
+
+(sidbison) step
 (sidbison)The current token was added to the parsed string
+
+(sidbison) str
 (sidbison)str: exp + ( 
 
+(sidbison) step
 (sidbison)A new token was encountered: 13
+
+(sidbison) step
 (sidbison)The current token was added to the parsed string
+
+(sidbison) rulepos
 (sidbison)Possible rule positions are:
     5 exp: LPAREN NUMBER . RPAREN
 
 
 (interactive) Where crule: Could not indentify crule as string was not accepted
+
+
+(sidbison) step
 (sidbison)A new token was encountered: -
+
+(sidbison) ctkn
 (sidbison)ctkn:-
+
+(sidbison) steprule
 (sidbison)Parser error! String not accepted
 Quitting
